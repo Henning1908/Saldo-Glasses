@@ -1,0 +1,10 @@
+{
+  "name": "Saldo · Meta Display Apps",
+  "short_name": "Saldo",
+  "description": "Deine Finanzen auf Meta Display Glasses.",
+  "start_url": "/glasses.html",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "icons": [{ "src": "/images/saldo-app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

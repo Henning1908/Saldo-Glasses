@@ -1,19 +1,104 @@
-from pathlib import Path
-p=Path('src/worker.js'); s=p.read_text(encoding='utf-8-sig')
-s=s.replace("    if (request.method === 'POST' && url.pathname === '/api/glasses/pair') {\n      const pair = await createPair(env)","    if (request.method === 'POST' && url.pathname === '/api/glasses/pair') {\n      const existing = cookie(request, 'saldo_device')\n      if (existing && await env.DB.prepare(\"SELECT id FROM pairings WHERE status='connected' AND device_hash=?\").bind(await hash(existing)).first()) return json({ connected: true })\n      const pair = await createPair(env)")
-p.write_text(s, encoding='utf-8')
-PY
-@'
 <!doctype html>
-<html lang="de"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/><meta name="theme-color" content="#07111f"/><title>Saldo · Brillenansicht</title><link rel="stylesheet" href="/styles.css"/><style>
-body{min-height:100dvh;background:#07111f}.glass-app{max-width:600px;min-height:100dvh;margin:auto;padding:32px 30px 22px;display:flex;flex-direction:column;background:radial-gradient(ellipse at 50% 0,#14344d 0,transparent 55%),#07111f;color:#eff6ff;font-family:'DM Sans',sans-serif}.glass-top{display:flex;align-items:center;gap:10px}.glass-top img{width:32px;height:32px}.glass-brand{font:700 14px 'Space Grotesk',sans-serif;letter-spacing:1px}.glass-brand span{color:#53c8f5}.glass-state{margin-left:auto;font-size:10px;color:#9caec4}.glass-screen{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center;padding:28px 0}.glass-label{font-size:10px;letter-spacing:1.8px;color:#8fb7d0;text-transform:uppercase}.glass-value{font:600 clamp(45px,11vw,68px) 'Space Grotesk',sans-serif;letter-spacing:-2px;margin:18px 0 5px}.glass-desc{color:#b2c2d2;font-size:14px;line-height:1.6}.glass-divider{height:1px;background:#244056;margin:25px 0}.glass-row{display:flex;justify-content:space-between;padding:9px 4px;color:#9caec4;font-size:13px}.glass-row b{color:#eff6ff}.glass-code{font:600 clamp(44px,12vw,66px) 'Space Grotesk',sans-serif;letter-spacing:12px;margin:22px 0;color:#76d7ff}.glass-caption{font-size:13px;line-height:1.6;color:#b5c4d2}.glass-instruction{border:1px solid #23435b;border-radius:14px;background:#0e2030;padding:18px 15px;margin-top:26px}.glass-instruction b{color:#fff}.glass-foot{display:flex;justify-content:space-between;color:#728aa0;font-size:10px}.glass-foot button{background:none;border:0;color:#9bb6ca;font-size:11px}@media(max-width:650px) and (max-height:650px){.glass-app{padding:15px 18px 12px}.glass-value{font-size:42px;margin:10px}.glass-divider{margin:14px 0}.glass-screen{padding:12px 0}.glass-instruction{padding:12px;margin-top:14px}}
-</style></head><body><main class="glass-app"><header class="glass-top"><img src="/images/meta-display-apps-logo.svg" alt=""/><div class="glass-brand">SALDO<span>.</span></div><div class="glass-state" id="connection-state">Verbinde …</div></header><section class="glass-screen" id="glass-screen"><span class="glass-label">META DISPLAY APPS</span><b class="glass-value">SALDO</b><div class="glass-desc">Dein Finanzüberblick auf einen Blick.</div></section><footer class="glass-foot"><span>Deine Finanzen. In deinem Blick.</span><button id="refresh">Aktualisieren ↻</button></footer></main><script>
-(() => { const $=s=>document.querySelector(s), money=n=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(n), screen=$('#glass-screen'); let data=null, page=0, codeTimer;
-function renderPair(code){$('#connection-state').textContent='Noch nicht gekoppelt';screen.innerHTML=`<span class="glass-label">VERBINDUNGSCODE</span><b class="glass-code">${code.slice(0,3)} ${code.slice(3)}</b><div class="glass-caption">Gib diesen Code in der Saldo Web-App auf deinem Computer ein.</div><div class="glass-instruction">Der Code läuft in <b>10 Minuten</b> ab.<br/>Danach kannst du einen neuen erzeugen.</div>`;clearInterval(codeTimer);codeTimer=setInterval(checkPair,2500)}
-function renderData(){const tx=data.transactions||[],bud=data.budgets||[],debts=data.debts||[],month=new Date(),current=tx.filter(t=>{const d=new Date(t.date);return d.getMonth()===month.getMonth()&&d.getFullYear()===month.getFullYear()}),income=current.filter(t=>t.type==='income').reduce((a,t)=>a+Number(t.amount),0),expense=current.filter(t=>t.type==='expense').reduce((a,t)=>a+Number(t.amount),0),recent=[...tx].sort((a,b)=>new Date(b.date)-new Date(a.date))[0];$('#connection-state').textContent='Verbunden · live';if(page===0)screen.innerHTML=`<span class="glass-label">MONATSERGEBNIS</span><b class="glass-value">${money(income-expense)}</b><div class="glass-desc">${new Intl.DateTimeFormat('de-DE',{month:'long'}).format(month)}</div><div class="glass-divider"></div><div class="glass-row"><span>Einnahmen</span><b>${money(income)}</b></div><div class="glass-row"><span>Ausgaben</span><b>${money(expense)}</b></div>`;else if(page===1)screen.innerHTML=`<span class="glass-label">LETZTE BUCHUNG</span><b class="glass-value" style="font-size:clamp(30px,8vw,50px)">${recent?(recent.type==='income'?'+':'−')+money(recent.amount):'Noch leer'}</b><div class="glass-desc">${recent?`${recent.note||recent.category} · ${recent.category}`:'Deine Buchungen erscheinen nach dem Erfassen hier.'}</div>`;else screen.innerHTML=`<span class="glass-label">DEIN FINANZÜBERBLICK</span><b class="glass-value" style="font-size:38px">${tx.length} Buchungen</b><div class="glass-row"><span>Budgets</span><b>${bud.length}</b></div><div class="glass-row"><span>Offene Beträge</span><b>${money(debts.reduce((s,d)=>s+Math.max(0,d.amount-d.paid),0))}</b></div><div class="glass-desc">Wische links/rechts für weitere Ansichten</div>`;}
-async function loadState(){const r=await fetch('/api/glasses/state');if(!r.ok)return;data=await r.json();clearInterval(codeTimer);renderData()}
-async function checkPair(){const r=await fetch('/api/glasses/pair-status'),v=await r.json();if(v.connected)loadState();else if(v.expired)startPair()}
-async function startPair(){const r=await fetch('/api/glasses/pair',{method:'POST'}),v=await r.json();if(v.connected){await loadState();return}renderPair(v.code)}
-$('#refresh').onclick=()=>data?loadState():startPair();let sx=null;document.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});document.addEventListener('touchend',e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>45&&data){page=(page+(dx<0?1:2))%3;renderData()}sx=null},{passive:true});document.addEventListener('keydown',e=>{if(data&&['ArrowRight','ArrowLeft'].includes(e.key)){page=(page+(e.key==='ArrowRight'?1:2))%3;renderData()}});startPair();setInterval(()=>data&&loadState(),20000);
-})();
-</script></body></html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#07111f">
+  <meta name="robots" content="noindex,follow">
+  <meta name="description" content="Saldo Finanzübersicht für Meta Display Glasses.">
+  <title>Saldo · Meta Display Apps</title>
+  <link rel="icon" href="/images/saldo-app-icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <style>
+    :root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#07111f;color:#f5f9ff}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 20% 10%,#163a5a,transparent 45%),#07111f}main{min-height:100vh;width:min(100%,600px);margin:auto;padding:28px;display:grid;align-content:center;gap:16px}.eyebrow{color:#66d8ff;font-size:.72rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.brand-kicker{display:flex;align-items:center;gap:10px}.brand-kicker img{width:38px;height:38px;object-fit:contain}h1,p{margin:0}h1{font-size:clamp(2rem,8vw,4rem);line-height:.98;letter-spacing:-.045em}.instruction{color:#c1cfdd;font-size:clamp(1rem,3.5vw,1.2rem);line-height:1.55}.code{font-size:clamp(3rem,16vw,6.3rem);letter-spacing:.11em;font-weight:850;color:#66d8ff;white-space:nowrap}.muted{color:#aab9cf}.summary{display:grid;gap:4px;border:1px solid #34516a;border-radius:18px;padding:18px;background:rgba(8,24,43,.88)}.summary-label{color:#9bb0c5;font-size:.72rem;font-weight:800;letter-spacing:.15em}.summary-total{font-size:clamp(2.7rem,12vw,4.3rem);font-weight:750;letter-spacing:-.05em}.summary-month{color:#aab9cf}.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-top:1px solid #30445e;color:#b7c8d8}.row b{color:#f5f9ff;font-size:1.05rem}.latest{border:1px solid #30445e;border-radius:18px;padding:17px;background:rgba(8,24,43,.8)}.latest-label{display:block;color:#66d8ff;font-size:.68rem;font-weight:800;letter-spacing:.14em;margin-bottom:8px}.latest-name{font-weight:700}.latest-meta{margin-top:5px;color:#aab9cf;font-size:.88rem}.hint{color:#8298ad;font-size:.78rem}.hidden{display:none!important}
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow brand-kicker"><img src="/images/meta-display-apps-logo.svg" alt="Meta Display Apps"><span>META DISPLAY APPS · SALDO</span></div>
+    <h1 id="glass-title">Mit PC verbinden</h1>
+    <p id="instruction" class="instruction">Gib diesen Code in Saldo auf deinem Computer ein.</p>
+    <div id="code" class="code">------</div>
+    <p id="status" class="muted">Verbindung wird vorbereitet …</p>
+    <section id="summary" class="summary hidden">
+      <span class="summary-label">MONATSERGEBNIS</span>
+      <strong id="month-total" class="summary-total">0,00&nbsp;€</strong>
+      <span id="month-name" class="summary-month"></span>
+      <div class="row"><span>Einnahmen</span><b id="income">0,00&nbsp;€</b></div>
+      <div class="row"><span>Ausgaben</span><b id="expense">0,00&nbsp;€</b></div>
+    </section>
+    <section id="latest" class="latest hidden"><span class="latest-label">LETZTE BUCHUNG</span><div id="latest-name" class="latest-name"></div><div id="latest-meta" class="latest-meta"></div></section>
+    <p id="hint" class="hint">Wische nach links oder rechts für weitere Ansichten.</p>
+  </main>
+  <script>
+    (() => {
+      const $ = (id) => document.getElementById(id);
+      const amount = (value) => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(value);
+      let page = 0;
+      let profile = null;
+      let pairTimer = null;
+      const showCode = (code) => {
+        $('glass-title').textContent = 'Mit PC verbinden';
+        $('instruction').textContent = 'Gib diesen Code in Saldo auf deinem Computer ein.';
+        $('code').textContent = `${code.slice(0,3)} ${code.slice(3)}`;
+        $('status').textContent = 'Der Code ist 10 Minuten gültig.';
+        $('summary').classList.add('hidden'); $('latest').classList.add('hidden'); $('hint').classList.add('hidden');
+        pairTimer = setInterval(checkPair, 2500);
+      };
+      const showData = () => {
+        if (!profile) return;
+        const tx = profile.transactions || [];
+        const now = new Date();
+        const monthTx = tx.filter((item) => { const date = new Date(item.date); return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear(); });
+        const income = monthTx.filter((item) => item.type === 'income').reduce((sum, item) => sum + Number(item.amount), 0);
+        const expense = monthTx.filter((item) => item.type === 'expense').reduce((sum, item) => sum + Number(item.amount), 0);
+        const recent = [...tx].sort((a,b) => new Date(b.date) - new Date(a.date))[0];
+        $('glass-title').textContent = page === 1 ? 'Letzte Buchung' : 'Finanzübersicht';
+        $('instruction').textContent = '';
+        $('code').classList.add('hidden'); $('status').textContent = 'Verbunden · wird automatisch aktualisiert';
+        $('summary').classList.toggle('hidden', page !== 0); $('latest').classList.toggle('hidden', page !== 1);
+        $('month-total').textContent = amount(income - expense);
+        $('month-name').textContent = new Intl.DateTimeFormat('de-DE', { month:'long', year:'numeric' }).format(now);
+        $('income').textContent = amount(income); $('expense').textContent = amount(expense);
+        if (recent) {
+          $('latest-name').textContent = recent.note || recent.category;
+          $('latest-meta').textContent = `${recent.type === 'income' ? '+' : '−'}${amount(recent.amount)} · ${recent.category}`;
+        } else {
+          $('latest-name').textContent = 'Noch keine Buchungen';
+          $('latest-meta').textContent = 'Deine erste Buchung erscheint hier.';
+        }
+        $('hint').classList.remove('hidden');
+      };
+      async function loadState() {
+        const response = await fetch('/api/glasses/state');
+        if (!response.ok) return;
+        profile = await response.json(); clearInterval(pairTimer); showData();
+      }
+      async function checkPair() {
+        const response = await fetch('/api/glasses/pair-status'); const state = await response.json();
+        if (state.connected) await loadState();
+        else if (state.expired) { clearInterval(pairTimer); await startPair(); }
+      }
+      async function startPair() {
+        const response = await fetch('/api/glasses/pair', { method:'POST' }); const result = await response.json();
+        if (result.connected) { await loadState(); return; }
+        showCode(result.code);
+      }
+      let startX = null;
+      document.addEventListener('touchstart', (event) => { startX = event.touches[0].clientX; }, { passive:true });
+      document.addEventListener('touchend', (event) => {
+        if (startX === null || !profile) return;
+        const delta = event.changedTouches[0].clientX - startX;
+        if (Math.abs(delta) > 40) { page = delta < 0 ? 1 : 0; showData(); }
+        startX = null;
+      }, { passive:true });
+      document.addEventListener('keydown', (event) => {
+        if (!profile || !['ArrowRight','ArrowLeft'].includes(event.key)) return;
+        page = event.key === 'ArrowRight' ? 1 : 0; showData();
+      });
+      startPair();
+      setInterval(() => { if (profile) loadState(); }, 20000);
+    })();
+  </script>
+</body>
+</html>
