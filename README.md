@@ -31,6 +31,10 @@ Saldo zeigt deine manuell erfassten Finanzdaten am Computer und auf deiner Brill
 - Brillenansicht mit Monatsübersicht und letzter Buchung
 - Spracheingabe im Web-Dashboard, wenn der Browser sie unterstützt
 
+## Meta Wearables App-Zeichen
+
+Saldo stellt für Meta Display Glasses ein Version-1-Manifest unter `/.well-known/meta-wearables-manifest.json` bereit. Es liefert den App-Namen und die cyanfarbene Darstellung. Das Icon ist ein transparentes, monochromes SVG für die 64 × 64 Icon-Fläche, wie in der [Meta Web Apps Icon-Dokumentation](https://wearables.developer.meta.com/docs/develop/webapps/build/app-icons/) beschrieben.
+
 ## Datenschutz
 
 - Saldo fragt keine Bankdaten ab und verbindet keine Finanzkonten.

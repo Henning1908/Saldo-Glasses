@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "name": "Saldo",
+  "description": "Deine Finanzen auf einen Blick.",
+  "appearance": {
+    "theme_color": "#53C8F5",
+    "icon": {
+      "src": "../images/saldo-mark.svg"
+    }
+  }
+}

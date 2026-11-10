@@ -51,6 +51,10 @@ async function createPair(env) {
 async function route(request, env) {
   const url = new URL(request.url)
   try {
+    if ((request.method === 'GET' || request.method === 'HEAD') && url.pathname === '/.well-known/meta-wearables-manifest.json') {
+      const body = JSON.stringify({ version: 1, name: 'Saldo', description: 'Deine Finanzen auf einen Blick.', appearance: { theme_color: '#53C8F5', icon: { src: '../images/saldo-mark.svg' } } })
+      return new Response(request.method === 'HEAD' ? null : body, { headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=3600' } })
+    }
     if (request.method === 'POST' && url.pathname === '/api/glasses/pair') {
       const pair = await createPair(env)
       return json({ code: pair.code, expiresIn: PAIR_TTL }, 200, { 'Set-Cookie': setCookie('saldo_device', pair.device) })
