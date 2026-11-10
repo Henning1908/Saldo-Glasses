@@ -80,6 +80,7 @@
     $('#monthly-result').style.color = result < 0 ? '#f1f4f1' : 'var(--mint)';
     $('#result-caption').textContent = result < 0 ? 'Du hast mehr ausgegeben als eingenommen.' : 'Deine Einnahmen liegen diesen Monat vorn.';
     $('#income-total').textContent = money(totals.income); $('#expense-total').textContent = money(totals.expense);
+    $('#expense-count').textContent = `${monthTx.filter((t) => t.type === 'expense').length} Buchungen`;
     $('#month-comparison').textContent = `${monthTx.length} manuell erfasste Buchungen`;
     $('#recent-list').innerHTML = [...state.transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5).map((t) => transactionRow(t)).join('') || '<div class="empty-state">Noch keine Buchungen. Füge deine erste hinzu.</div>';
     const search = ($('#transaction-search')?.value || '').trim().toLocaleLowerCase('de-DE');
