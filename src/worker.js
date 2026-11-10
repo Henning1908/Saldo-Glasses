@@ -96,7 +96,21 @@ async function route(request, env) {
     if (url.pathname === '/api/glasses/state' && request.method === 'GET') {
       if (!await deviceAuth(request, env)) return json({ error: 'Brille ist noch nicht gekoppelt.' }, 401)
       const profile = await load(env)
-      return json({ transactions: profile?.transactions || [], budgets: profile?.budgets || [], debts: profile?.debts || [] })
+      return json({ transactions: profile?.transactions || [], budgets: profile?.budgets || [], debts: profile?.debts || [], groups: profile?.groups || [], categories: profile?.categories || [] })
+    }
+    if (request.method === 'POST' && url.pathname === '/api/glasses/transaction') {
+      if (!await deviceAuth(request, env)) return json({ error: 'Brille ist noch nicht gekoppelt.' }, 401)
+      const profile = await load(env)
+      if (!profile) return json({ error: 'Saldo wurde noch nicht eingerichtet.' }, 404)
+      const body = await request.json().catch(() => ({}))
+      const type = body.type === 'income' ? 'income' : body.type === 'expense' ? 'expense' : ''
+      const amount = Number(body.amount), category = String(body.category || '').trim().slice(0, 48), note = String(body.note || '').trim().slice(0, 100)
+      const date = /^\d{4}-\d{2}-\d{2}$/.test(String(body.date || '')) ? body.date : new Date().toISOString().slice(0, 10)
+      if (!type || !Number.isFinite(amount) || amount <= 0 || amount > 100000000 || !category) return json({ error: 'Bitte Typ, Kategorie und einen gültigen Betrag angeben.' }, 400)
+      const transaction = { id: `tx-${token(12)}`, type, amount: Math.round(amount * 100) / 100, category, groupId: '', note: note || category, date: `${date}T12:00:00`, payment: 'Brille' }
+      const transactions = [...(profile.transactions || []), transaction]
+      await save(env, { ...profile, transactions })
+      return json({ saved: true, transaction, transactions })
     }
     if (request.method === 'POST' && url.pathname === '/api/disconnect') {
       const profile = await load(env)

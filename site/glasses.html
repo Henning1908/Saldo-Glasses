@@ -1,104 +1,36 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="theme-color" content="#07111f">
-  <meta name="robots" content="noindex,follow">
-  <meta name="description" content="Saldo Finanzübersicht für Meta Display Glasses.">
-  <title>Saldo · Meta Display Apps</title>
-  <link rel="icon" href="/images/saldo-app-icon.svg" type="image/svg+xml">
-  <link rel="manifest" href="/manifest.webmanifest">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"><meta name="theme-color" content="#07111f"><meta name="robots" content="noindex,follow"><meta name="description" content="Saldo Finanzübersicht und Buchungseingabe für Meta Display Glasses.">
+  <title>Saldo · Meta Display Apps</title><link rel="icon" href="/images/saldo-app-icon.svg" type="image/svg+xml"><link rel="manifest" href="/manifest.webmanifest">
   <style>
-    :root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#07111f;color:#f5f9ff}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 20% 10%,#163a5a,transparent 45%),#07111f}main{min-height:100vh;width:min(100%,600px);margin:auto;padding:28px;display:grid;align-content:center;gap:16px}.eyebrow{color:#66d8ff;font-size:.72rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.brand-kicker{display:flex;align-items:center;gap:10px}.brand-kicker img{width:38px;height:38px;object-fit:contain}h1,p{margin:0}h1{font-size:clamp(2rem,8vw,4rem);line-height:.98;letter-spacing:-.045em}.instruction{color:#c1cfdd;font-size:clamp(1rem,3.5vw,1.2rem);line-height:1.55}.code{font-size:clamp(3rem,16vw,6.3rem);letter-spacing:.11em;font-weight:850;color:#66d8ff;white-space:nowrap}.muted{color:#aab9cf}.summary{display:grid;gap:4px;border:1px solid #34516a;border-radius:18px;padding:18px;background:rgba(8,24,43,.88)}.summary-label{color:#9bb0c5;font-size:.72rem;font-weight:800;letter-spacing:.15em}.summary-total{font-size:clamp(2.7rem,12vw,4.3rem);font-weight:750;letter-spacing:-.05em}.summary-month{color:#aab9cf}.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-top:1px solid #30445e;color:#b7c8d8}.row b{color:#f5f9ff;font-size:1.05rem}.latest{border:1px solid #30445e;border-radius:18px;padding:17px;background:rgba(8,24,43,.8)}.latest-label{display:block;color:#66d8ff;font-size:.68rem;font-weight:800;letter-spacing:.14em;margin-bottom:8px}.latest-name{font-weight:700}.latest-meta{margin-top:5px;color:#aab9cf;font-size:.88rem}.hint{color:#8298ad;font-size:.78rem}.hidden{display:none!important}
+    :root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#07111f;color:#f5f9ff;--cyan:#66d8ff;--green:#28d6a0;--red:#ee6d8b}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 20% 10%,#163a5a,transparent 45%),#07111f}main{min-height:100vh;width:min(100%,600px);margin:auto;padding:22px;display:grid;align-content:center;gap:13px}.eyebrow{color:var(--cyan);font-size:.68rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase}.brand-kicker{display:flex;align-items:center;gap:9px}.brand-kicker img{width:32px;height:32px;object-fit:contain}h1,p{margin:0}h1{font-size:clamp(1.8rem,7vw,3rem);line-height:1;letter-spacing:-.045em}.instruction{color:#c1cfdd;font-size:1rem;line-height:1.5}.code{font-size:clamp(3rem,16vw,6.3rem);letter-spacing:.11em;font-weight:850;color:var(--cyan);white-space:nowrap}.muted{color:#aab9cf}.summary,.latest,.entry{display:grid;gap:12px;border:1px solid #34516a;border-radius:18px;padding:17px;background:rgba(8,24,43,.9)}.summary-label,.latest-label{color:#9bb0c5;font-size:.68rem;font-weight:800;letter-spacing:.15em}.summary-total{font-size:clamp(2.6rem,12vw,4.3rem);font-weight:800;letter-spacing:-.06em;line-height:1.05}.summary-total.positive{color:var(--green)}.summary-total.negative{color:var(--red)}.summary-total.neutral{color:#f5f9ff}.summary-month,.latest-meta{color:#aab9cf}.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #30445e;color:#b7c8d8}.row b{color:#f5f9ff;font-size:1rem}.latest-name{font-size:1.1rem;font-weight:700}.hint{color:#8298ad;font-size:.75rem}.hidden{display:none!important}.page{display:grid;gap:12px}.switch{display:grid;grid-template-columns:1fr 1fr;gap:8px}.switch button,.keypad button,.nav button,.primary,.secondary{min-height:45px;border:1px solid #426078;border-radius:12px;background:#10283d;color:#dcebf7;font-weight:700}.switch button.active[data-type=income]{background:#103a35;border-color:#28d6a0;color:#8cecc7}.switch button.active[data-type=expense]{background:#3c2332;border-color:#ee6d8b;color:#ffb0be}.amount{width:100%;height:58px;border:1px solid #426078;border-radius:12px;background:#061523;color:#fff;padding:0 15px;font-size:2rem;font-weight:800;text-align:right}.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.keypad button{font-size:1.2rem;min-height:43px}.keypad button.utility{color:var(--cyan);background:#0a1b2b}.entry select,.entry input.note{width:100%;height:43px;border:1px solid #426078;border-radius:10px;background:#061523;color:#f5f9ff;padding:0 12px;font:inherit}.entry label{display:grid;gap:6px;color:#aab9cf;font-size:.72rem;font-weight:700;letter-spacing:.08em}.entry-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.primary{background:linear-gradient(110deg,#4cc9eb,#67daff);color:#041422;border-color:var(--cyan);min-height:49px;font-size:1rem}.primary:disabled{opacity:.55}.secondary{background:#10283d}.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.nav button{min-height:37px;font-size:.8rem;color:#9bb0c5}.nav button.active{border-color:var(--cyan);color:#e8faff;background:#12344a}.status{min-height:1em;color:#aab9cf;font-size:.82rem}.status.error{color:#ff9dae}.status.ok{color:var(--green)}
   </style>
 </head>
-<body>
-  <main>
-    <div class="eyebrow brand-kicker"><img src="/images/meta-display-apps-logo.svg" alt="Meta Display Apps"><span>META DISPLAY APPS · SALDO</span></div>
-    <h1 id="glass-title">Mit PC verbinden</h1>
-    <p id="instruction" class="instruction">Gib diesen Code in Saldo auf deinem Computer ein.</p>
-    <div id="code" class="code">------</div>
-    <p id="status" class="muted">Verbindung wird vorbereitet …</p>
-    <section id="summary" class="summary hidden">
-      <span class="summary-label">MONATSERGEBNIS</span>
-      <strong id="month-total" class="summary-total">0,00&nbsp;€</strong>
-      <span id="month-name" class="summary-month"></span>
-      <div class="row"><span>Einnahmen</span><b id="income">0,00&nbsp;€</b></div>
-      <div class="row"><span>Ausgaben</span><b id="expense">0,00&nbsp;€</b></div>
-    </section>
-    <section id="latest" class="latest hidden"><span class="latest-label">LETZTE BUCHUNG</span><div id="latest-name" class="latest-name"></div><div id="latest-meta" class="latest-meta"></div></section>
-    <p id="hint" class="hint">Wische nach links oder rechts für weitere Ansichten.</p>
-  </main>
-  <script>
-    (() => {
-      const $ = (id) => document.getElementById(id);
-      const amount = (value) => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(value);
-      let page = 0;
-      let profile = null;
-      let pairTimer = null;
-      const showCode = (code) => {
-        $('glass-title').textContent = 'Mit PC verbinden';
-        $('instruction').textContent = 'Gib diesen Code in Saldo auf deinem Computer ein.';
-        $('code').textContent = `${code.slice(0,3)} ${code.slice(3)}`;
-        $('status').textContent = 'Der Code ist 10 Minuten gültig.';
-        $('summary').classList.add('hidden'); $('latest').classList.add('hidden'); $('hint').classList.add('hidden');
-        pairTimer = setInterval(checkPair, 2500);
-      };
-      const showData = () => {
-        if (!profile) return;
-        const tx = profile.transactions || [];
-        const now = new Date();
-        const monthTx = tx.filter((item) => { const date = new Date(item.date); return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear(); });
-        const income = monthTx.filter((item) => item.type === 'income').reduce((sum, item) => sum + Number(item.amount), 0);
-        const expense = monthTx.filter((item) => item.type === 'expense').reduce((sum, item) => sum + Number(item.amount), 0);
-        const recent = [...tx].sort((a,b) => new Date(b.date) - new Date(a.date))[0];
-        $('glass-title').textContent = page === 1 ? 'Letzte Buchung' : 'Finanzübersicht';
-        $('instruction').textContent = '';
-        $('code').classList.add('hidden'); $('status').textContent = 'Verbunden · wird automatisch aktualisiert';
-        $('summary').classList.toggle('hidden', page !== 0); $('latest').classList.toggle('hidden', page !== 1);
-        $('month-total').textContent = amount(income - expense);
-        $('month-name').textContent = new Intl.DateTimeFormat('de-DE', { month:'long', year:'numeric' }).format(now);
-        $('income').textContent = amount(income); $('expense').textContent = amount(expense);
-        if (recent) {
-          $('latest-name').textContent = recent.note || recent.category;
-          $('latest-meta').textContent = `${recent.type === 'income' ? '+' : '−'}${amount(recent.amount)} · ${recent.category}`;
-        } else {
-          $('latest-name').textContent = 'Noch keine Buchungen';
-          $('latest-meta').textContent = 'Deine erste Buchung erscheint hier.';
-        }
-        $('hint').classList.remove('hidden');
-      };
-      async function loadState() {
-        const response = await fetch('/api/glasses/state');
-        if (!response.ok) return;
-        profile = await response.json(); clearInterval(pairTimer); showData();
-      }
-      async function checkPair() {
-        const response = await fetch('/api/glasses/pair-status'); const state = await response.json();
-        if (state.connected) await loadState();
-        else if (state.expired) { clearInterval(pairTimer); await startPair(); }
-      }
-      async function startPair() {
-        const response = await fetch('/api/glasses/pair', { method:'POST' }); const result = await response.json();
-        if (result.connected) { await loadState(); return; }
-        showCode(result.code);
-      }
-      let startX = null;
-      document.addEventListener('touchstart', (event) => { startX = event.touches[0].clientX; }, { passive:true });
-      document.addEventListener('touchend', (event) => {
-        if (startX === null || !profile) return;
-        const delta = event.changedTouches[0].clientX - startX;
-        if (Math.abs(delta) > 40) { page = delta < 0 ? 1 : 0; showData(); }
-        startX = null;
-      }, { passive:true });
-      document.addEventListener('keydown', (event) => {
-        if (!profile || !['ArrowRight','ArrowLeft'].includes(event.key)) return;
-        page = event.key === 'ArrowRight' ? 1 : 0; showData();
-      });
-      startPair();
-      setInterval(() => { if (profile) loadState(); }, 20000);
-    })();
-  </script>
-</body>
-</html>
+<body><main>
+  <div class="eyebrow brand-kicker"><img src="/images/meta-display-apps-logo.svg" alt="Meta Display Apps"><span>META DISPLAY APPS · SALDO</span></div>
+  <h1 id="glass-title">Mit PC verbinden</h1><p id="instruction" class="instruction">Gib diesen Code in Saldo auf deinem Computer ein.</p><div id="code" class="code">------</div><p id="status" class="muted">Verbindung wird vorbereitet …</p>
+  <section id="summary" class="summary hidden"><span class="summary-label">MONATSERGEBNIS</span><strong id="month-total" class="summary-total neutral">0,00&nbsp;€</strong><span id="month-name" class="summary-month"></span><div class="row"><span>Einnahmen</span><b id="income">0,00&nbsp;€</b></div><div class="row"><span>Ausgaben</span><b id="expense">0,00&nbsp;€</b></div><button id="new-entry" class="primary">＋ Neue Buchung</button></section>
+  <section id="entry-page" class="entry hidden"><span class="summary-label">NEUE BUCHUNG</span><div class="switch"><button type="button" class="active" data-type="expense">− Ausgabe</button><button type="button" data-type="income">＋ Einnahme</button></div><label class="summary-label" for="entry-amount">BETRAG IN EURO</label><input id="entry-amount" class="amount" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off"><div class="keypad" id="keypad"><button type="button" data-key="1">1</button><button type="button" data-key="2">2</button><button type="button" data-key="3">3</button><button type="button" data-key="4">4</button><button type="button" data-key="5">5</button><button type="button" data-key="6">6</button><button type="button" data-key="7">7</button><button type="button" data-key="8">8</button><button type="button" data-key="9">9</button><button type="button" data-key=",">,</button><button type="button" data-key="0">0</button><button type="button" class="utility" data-key="back">⌫</button></div><div class="entry-row"><label>KATEGORIE<select id="entry-category"></select></label><label>DATUM<input id="entry-date" type="date"></label></div><label>BESCHREIBUNG<input id="entry-note" class="note" maxlength="100" placeholder="Optional"></label><p id="entry-status" class="status" aria-live="polite"></p><button id="save-entry" class="primary">Buchung speichern</button><button id="cancel-entry" class="secondary">Zurück zur Übersicht</button></section>
+  <section id="latest" class="latest hidden"><span class="latest-label">LETZTE BUCHUNG</span><div id="latest-name" class="latest-name"></div><div id="latest-meta" class="latest-meta"></div></section>
+  <div id="page-nav" class="nav hidden"><button data-page="0" class="active">Saldo</button><button data-page="1">＋ Buchung</button><button data-page="2">Letzte</button></div><p id="hint" class="hint">Wische seitlich oder nutze die Navigation.</p>
+</main>
+<script>
+(()=>{
+ const $=id=>document.getElementById(id),amount=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(Number(v)||0),today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+ const expenseDefaults=['Essen','Wohnen','Transport','Freizeit','Gesundheit','Einkauf','Abos','Reisen','Bildung','Haushalt','Technik','Sonstiges'],incomeDefaults=['Gehalt','Freelance','Erstattung','Geschenk','Taschengeld','Sonstige Einnahmen'];let page=0,type='expense',profile=null,pairTimer=null;
+ function setPage(next){page=next;showData()}
+ function showCode(code){$('glass-title').textContent='Mit PC verbinden';$('instruction').textContent='Gib diesen Code in Saldo auf deinem Computer ein.';$('code').textContent=`${code.slice(0,3)} ${code.slice(3)}`;$('status').textContent='Der Code ist 10 Minuten gültig.';['summary','entry-page','latest','page-nav','hint'].forEach(x=>$(x).classList.add('hidden'));pairTimer=setInterval(checkPair,2500)}
+ function showData(){if(!profile)return;$('glass-title').textContent=page===1?'Neue Buchung':page===2?'Letzte Buchung':'Finanzübersicht';$('instruction').textContent='';$('code').classList.add('hidden');$('status').textContent='Verbunden · wird automatisch aktualisiert';$('summary').classList.toggle('hidden',page!==0);$('entry-page').classList.toggle('hidden',page!==1);$('latest').classList.toggle('hidden',page!==2);$('page-nav').classList.remove('hidden');$('page-nav').querySelectorAll('button').forEach(b=>b.classList.toggle('active',Number(b.dataset.page)===page));$('hint').classList.remove('hidden');const tx=profile.transactions||[],now=new Date(),mt=tx.filter(x=>{const d=new Date(x.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()}),inc=mt.filter(x=>x.type==='income').reduce((s,x)=>s+Number(x.amount),0),exp=mt.filter(x=>x.type==='expense').reduce((s,x)=>s+Number(x.amount),0),net=inc-exp;$('month-total').textContent=amount(net);$('month-total').classList.remove('positive','negative','neutral');$('month-total').classList.add(net>0?'positive':net<0?'negative':'neutral');$('month-name').textContent=new Intl.DateTimeFormat('de-DE',{month:'long',year:'numeric'}).format(now);$('income').textContent=amount(inc);$('expense').textContent=amount(exp);const recent=[...tx].sort((a,b)=>new Date(b.date)-new Date(a.date))[0];$('latest-name').textContent=recent?.note||recent?.category||'Noch keine Buchungen';$('latest-meta').textContent=recent?`${recent.type==='income'?'+':'−'}${amount(recent.amount)} · ${recent.category}`:'Deine erste Buchung erscheint hier.'}
+ function refreshCategories(){const built=type==='income'?incomeDefaults:expenseDefaults,custom=(profile?.categories||[]).filter(c=>c.type===type).map(c=>c.name),values=[...new Set([...built,...custom])];$('entry-category').innerHTML=values.map(c=>`<option value="${c.replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]))}">${c}</option>`).join('')}
+ async function loadState(){const r=await fetch('/api/glasses/state');if(!r.ok)return;profile=await r.json();clearInterval(pairTimer);refreshCategories();showData()}
+ async function checkPair(){const r=await fetch('/api/glasses/pair-status'),s=await r.json();if(s.connected)await loadState();else if(s.expired){clearInterval(pairTimer);await startPair()}}
+ async function startPair(){const r=await fetch('/api/glasses/pair',{method:'POST'}),v=await r.json();if(v.connected){await loadState();return}showCode(v.code)}
+ document.querySelectorAll('[data-type]').forEach(b=>b.addEventListener('click',()=>{type=b.dataset.type;document.querySelectorAll('[data-type]').forEach(x=>x.classList.toggle('active',x===b));refreshCategories()}));
+ $('keypad').addEventListener('click',e=>{const b=e.target.closest('[data-key]');if(!b)return;const i=$('entry-amount');i.value=b.dataset.key==='back'?i.value.slice(0,-1):i.value+b.dataset.key;i.focus()});
+ function openEntry(){type='expense';document.querySelectorAll('[data-type]').forEach(x=>x.classList.toggle('active',x.dataset.type===type));$('entry-amount').value='';$('entry-note').value='';$('entry-date').value=today();$('entry-status').textContent='';$('entry-status').className='status';refreshCategories();setPage(1)}
+ $('new-entry').addEventListener('click',openEntry);$('page-nav').addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(b){if(Number(b.dataset.page)===1)openEntry();else setPage(Number(b.dataset.page))}});$('cancel-entry').addEventListener('click',()=>setPage(0));
+ $('save-entry').addEventListener('click',async()=>{const raw=$('entry-amount').value.trim().replace(/\s/g,'').replace(',','.');if(!/^\d+(\.\d{1,2})?$/.test(raw)||Number(raw)<=0){$('entry-status').textContent='Bitte einen gültigen Betrag eingeben.';$('entry-status').className='status error';return}const button=$('save-entry');button.disabled=true;$('entry-status').textContent='Wird gespeichert …';try{const r=await fetch('/api/glasses/transaction',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type,amount:Number(raw),category:$('entry-category').value,date:$('entry-date').value||today(),note:$('entry-note').value.trim()})}),data=await r.json();if(!r.ok)throw Error(data.error||'Speichern fehlgeschlagen.');profile.transactions=data.transactions;$('entry-status').textContent='Gespeichert · Saldo wird aktualisiert.';$('entry-status').className='status ok';setPage(0)}catch(err){$('entry-status').textContent=err.message;$('entry-status').className='status error'}finally{button.disabled=false}});
+ let startX=null;document.addEventListener('touchstart',e=>{startX=e.touches[0].clientX},{passive:true});document.addEventListener('touchend',e=>{if(startX===null||!profile)return;const delta=e.changedTouches[0].clientX-startX;if(Math.abs(delta)>65)setPage(Math.max(0,Math.min(2,page+(delta<0?1:-1))));startX=null},{passive:true});document.addEventListener('keydown',e=>{if(!profile||!['ArrowRight','ArrowLeft'].includes(e.key)||page===1)return;setPage(Math.max(0,Math.min(2,page+(e.key==='ArrowRight'?1:-1))))});startPair();setInterval(()=>{if(profile&&page!==1)loadState()},20000)
+})();
+</script></body></html>
