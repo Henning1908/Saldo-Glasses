@@ -159,4 +159,10 @@
   $('#glass-overlay').addEventListener('click', (e) => { if (e.target.closest('.glass-device')) { const rect = $('.glass-device').getBoundingClientRect(); moveGlass(e.clientX > rect.left + rect.width / 2 ? 1 : -1); } });
   document.addEventListener('keydown', (e) => { if ($('#glass-overlay').classList.contains('open')) { if (['ArrowRight', 'ArrowDown'].includes(e.key)) moveGlass(1); if (['ArrowLeft', 'ArrowUp'].includes(e.key)) moveGlass(-1); if (e.key === 'Escape') $('#glass-exit').click(); } else if (e.key === 'Escape') closeModals(); });
   const initial = location.hash.slice(1); if ($(`#page-${initial}`)) setPage(initial); else render();
+  if (window.matchMedia('(max-width: 650px) and (max-height: 650px)').matches) {
+    document.body.classList.add('glasses-mode');
+    $('#glass-overlay').classList.add('open');
+    $('#glass-overlay').setAttribute('aria-hidden', 'false');
+    renderGlass();
+  }
 })();
