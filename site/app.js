@@ -1,37 +1,6 @@
 (() => {
-  const KEY = 'saldo-app-v1';
-  const monthCursor = new Date(2026, 10, 1);
-  const defaultState = {
-    transactions: [
-      { id: 't1', type: 'expense', amount: 8.5, category: 'Essen', note: 'Mittagessen', date: '2026-11-10T12:45:00' },
-      { id: 't2', type: 'expense', amount: 32, category: 'Freizeit', note: 'Kino mit Freunden', date: '2026-11-09T19:20:00' },
-      { id: 't3', type: 'income', amount: 150, category: 'Taschengeld', note: 'Monatliches Taschengeld', date: '2026-11-08T10:15:00' },
-      { id: 't4', type: 'expense', amount: 24.9, category: 'Kleidung', note: 'T-Shirt', date: '2026-11-07T15:42:00' },
-      { id: 't5', type: 'expense', amount: 5.2, category: 'Transport', note: 'Bus & Bahn', date: '2026-11-06T08:03:00' },
-      { id: 't6', type: 'income', amount: 50, category: 'Geschenke', note: 'Geburtstagsgeschenk', date: '2026-11-04T13:30:00' },
-      { id: 't7', type: 'expense', amount: 12.4, category: 'Essen', note: 'Bäckerei', date: '2026-11-03T09:05:00' },
-      { id: 't8', type: 'expense', amount: 18, category: 'Freizeit', note: 'Schwimmbad', date: '2026-11-02T16:12:00' },
-      { id: 't9', type: 'income', amount: 650, category: 'Arbeit', note: 'Nebenjob', date: '2026-11-01T09:00:00' },
-      { id: 't10', type: 'expense', amount: 45, category: 'Technik', note: 'Kopfhörer', date: '2026-11-01T09:00:00' },
-      { id: 't11', type: 'expense', amount: 1028.2, category: 'Wohnen', note: 'Wohnen & Fixkosten', date: '2026-11-01T08:45:00' }
-    ],
-    budgets: [
-      { category: 'Essen', emoji: '🍜', limit: 150, color: '#86dfba' },
-      { category: 'Freizeit', emoji: '✳', limit: 80, color: '#a9bde9' },
-      { category: 'Kleidung', emoji: '◌', limit: 100, color: '#e9bf7e' },
-      { category: 'Transport', emoji: '↗', limit: 50, color: '#dd958a' },
-      { category: 'Technik', emoji: '▧', limit: 100, color: '#bd9dde' },
-      { category: 'Sonstiges', emoji: '＋', limit: 40, color: '#8dbfcb' }
-    ],
-    debts: [
-      { id: 'd1', direction: 'owed', person: 'Max', amount: 30, paid: 10, note: 'Tickets fürs Konzert', date: '2026-10-22' },
-      { id: 'd2', direction: 'owed', person: 'Lena', amount: 90, paid: 0, note: 'Wochenendtrip', date: '2026-11-02' },
-      { id: 'd3', direction: 'lent', person: 'Jonas', amount: 50, paid: 0, note: 'Essen gehen', date: '2026-11-04' },
-      { id: 'd4', direction: 'lent', person: 'Mia', amount: 25, paid: 0, note: 'Kinokarte', date: '2026-11-07' }
-    ]
-  };
-  let state;
-  try { state = JSON.parse(localStorage.getItem(KEY)) || structuredClone(defaultState); } catch { state = structuredClone(defaultState); }
+  const monthCursor = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  let state = { transactions: [], budgets: [], debts: [] };
   let currentType = 'expense';
   let transactionFilter = 'all';
   let glassPage = 0;
@@ -40,7 +9,7 @@
   const $ = (s, root = document) => root.querySelector(s);
   const $$ = (s, root = document) => [...root.querySelectorAll(s)];
   const money = (n, digits = 2) => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: digits, maximumFractionDigits: digits }).format(n);
-  const save = () => localStorage.setItem(KEY, JSON.stringify(state));
+  const save = async () => { try { const r = await fetch('/api/state', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(state) }); if (!r.ok) throw new Error(); } catch { toast('Speichern fehlgeschlagen. Bitte Verbindung prüfen.'); } };
   const monthName = (d) => new Intl.DateTimeFormat('de-DE', { month: 'long', year: 'numeric' }).format(d);
   const currentMonthTransactions = () => state.transactions.filter((t) => {
     const d = new Date(t.date); return d.getFullYear() === monthCursor.getFullYear() && d.getMonth() === monthCursor.getMonth();
@@ -75,10 +44,14 @@
   const render = () => {
     const totals = monthTotals(), result = totals.income - totals.expense, monthTx = currentMonthTransactions();
     $('#month-label').textContent = monthName(monthCursor);
+    $('#result-month').innerHTML = `<span class="live-dot"></span> ${monthName(monthCursor).toLocaleUpperCase('de-DE')}`;
+    $('#stats-month').textContent = monthName(monthCursor).toLocaleUpperCase('de-DE');
+    $('.budget-month').textContent = monthName(monthCursor);
+    $('.income-month').textContent = `im ${monthName(monthCursor)}`; $('.expense-month').textContent = `im ${monthName(monthCursor)}`;
     $('#transaction-count').textContent = state.transactions.length;
-    $('#monthly-result').textContent = `${result < 0 ? '−' : '+'}${money(Math.abs(result))}`;
+    $('#monthly-result').textContent = monthTx.length ? `${result < 0 ? '−' : '+'}${money(Math.abs(result))}` : money(0);
     $('#monthly-result').style.color = result < 0 ? '#f1f4f1' : 'var(--mint)';
-    $('#result-caption').textContent = result < 0 ? 'Du hast mehr ausgegeben als eingenommen.' : 'Deine Einnahmen liegen diesen Monat vorn.';
+    $('#result-caption').textContent = monthTx.length ? (result < 0 ? 'Du hast mehr ausgegeben als eingenommen.' : 'Deine Einnahmen liegen diesen Monat vorn.') : 'Dein Startpunkt. Erfasse deine erste Buchung.';
     $('#income-total').textContent = money(totals.income); $('#expense-total').textContent = money(totals.expense);
     $('#expense-count').textContent = `${monthTx.filter((t) => t.type === 'expense').length} Buchungen`;
     $('#month-comparison').textContent = `${monthTx.length} manuell erfasste Buchungen`;
@@ -86,7 +59,7 @@
     const search = ($('#transaction-search')?.value || '').trim().toLocaleLowerCase('de-DE');
     const filtered = [...state.transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).filter((t) => (transactionFilter === 'all' || t.type === transactionFilter) && (!search || `${t.note} ${t.category} ${t.amount}`.toLocaleLowerCase('de-DE').includes(search)));
     if ($('#full-list')) $('#full-list').innerHTML = filtered.map((t) => transactionRow(t, true)).join('') || '<div class="empty-state">Keine passenden Buchungen gefunden.</div>';
-    $('#budget-list').innerHTML = state.budgets.slice(0, 3).map((b) => { const v = budgetRow(b); return `<div class="budget-line"><div class="budget-label"><span><span class="budget-emoji">${b.emoji}</span>${escapeHtml(b.category)}</span><span class="budget-value">${money(v.spent, 0)} / ${money(b.limit, 0)}</span></div><div class="progress-track"><div class="progress-fill ${v.cls}" style="width:${Math.min(100, v.pct)}%"></div></div></div>`; }).join('');
+    $('#budget-list').innerHTML = state.budgets.slice(0, 3).map((b) => { const v = budgetRow(b); return `<div class="budget-line"><div class="budget-label"><span><span class="budget-emoji">${b.emoji}</span>${escapeHtml(b.category)}</span><span class="budget-value">${money(v.spent, 0)} / ${money(b.limit, 0)}</span></div><div class="progress-track"><div class="progress-fill ${v.cls}" style="width:${Math.min(100, v.pct)}%"></div></div></div>`; }).join('') || '<div class="empty-state">Noch keine Budgets. Lege dein erstes Budget an.</div>';
     const budgetTotal = state.budgets.reduce((s, b) => s + Number(b.limit), 0), budgetSpentTotal = state.budgets.reduce((s, b) => s + budgetRow(b).spent, 0);
     $('#budget-total').textContent = money(budgetTotal, 0); $('#budget-spent').textContent = money(budgetSpentTotal, 0); $('#budget-remaining').textContent = money(budgetTotal - budgetSpentTotal, 0); $('#budget-progress').style.width = `${Math.min(100, budgetSpentTotal / (budgetTotal || 1) * 100)}%`;
     $('#budgets-grid').innerHTML = state.budgets.map((b) => { const v = budgetRow(b); return `<article class="card budget-detail-card"><div class="budget-detail-top"><span class="budget-detail-icon" style="color:${b.color}">${b.emoji}</span><span class="budget-detail-copy"><b>${escapeHtml(b.category)}</b><span>Monatsbudget</span></span><span class="budget-detail-amount">${money(v.spent, 0)}<span>von ${money(b.limit, 0)}</span></span></div><div class="progress-track"><div class="progress-fill ${v.cls}" style="width:${Math.min(100, v.pct)}%"></div></div><div class="budget-detail-bottom"><span>${Math.round(v.pct)} % genutzt</span><span>${v.spent >= b.limit ? 'Budget erreicht' : `${money(b.limit - v.spent, 0)} verfügbar`}</span></div></article>`; }).join('');
@@ -147,9 +120,9 @@
   const glassPages = ['summary', 'recent', 'add', 'debts'];
   const renderGlass = () => {
     const body = $('#glass-body'), totals = monthTotals(), recent = [...state.transactions].sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-    if (glassPage === 0) body.innerHTML = `<span class="glass-eyebrow">NOVEMBER · ERGEBNIS</span><b class="glass-value">${totals.income - totals.expense < 0 ? '−' : '+'}${money(Math.abs(totals.income - totals.expense))}</b><span class="glass-description">${totals.income - totals.expense < 0 ? 'Mehr ausgegeben als eingenommen' : 'Du bist diesen Monat im Plus'}</span><div class="glass-divider"></div><div class="glass-mini-row"><span>↑ Einnahmen</span><b>${money(totals.income)}</b></div><div class="glass-mini-row"><span>↓ Ausgaben</span><b>${money(totals.expense)}</b></div><span class="glass-tip">Weiterwischen für letzte Buchung</span>`;
+    if (glassPage === 0) body.innerHTML = `<span class="glass-eyebrow">${monthName(monthCursor).toLocaleUpperCase('de-DE')} · ERGEBNIS</span><b class="glass-value">${totals.income - totals.expense < 0 ? '−' : '+'}${money(Math.abs(totals.income - totals.expense))}</b><span class="glass-description">${totals.income - totals.expense < 0 ? 'Mehr ausgegeben als eingenommen' : 'Du bist diesen Monat im Plus'}</span><div class="glass-divider"></div><div class="glass-mini-row"><span>↑ Einnahmen</span><b>${money(totals.income)}</b></div><div class="glass-mini-row"><span>↓ Ausgaben</span><b>${money(totals.expense)}</b></div><span class="glass-tip">Weiterwischen für letzte Buchung</span>`;
     else if (glassPage === 1) body.innerHTML = `<span class="glass-eyebrow">LETZTE BUCHUNG</span><span class="glass-description">${escapeHtml(recent?.note || 'Noch keine Buchungen')}</span><b class="glass-value" style="font-size:clamp(29px,6vw,42px);color:${recent?.type === 'income' ? '#aff5d5' : '#f4c3a6'}">${recent?.type === 'income' ? '+' : '−'}${money(recent?.amount || 0)}</b><div class="glass-mini-row"><span>${iconFor(recent?.category)} ${escapeHtml(recent?.category || '')}</span><b>${fmtDate(recent?.date || new Date())}</b></div><span class="glass-tip">Weiterwischen für Schnellbuchung</span>`;
-    else if (glassPage === 2) body.innerHTML = `<span class="glass-eyebrow">SCHNELLBUCHUNG</span><span class="glass-value" style="font-size:clamp(28px,6vw,44px)">＋</span><span class="glass-description">Sag zum Beispiel:<br><b>„8 Euro für Essen“</b></span><div class="glass-divider"></div><span class="glass-tip">Spracheingabe erfolgt über die Web-App</span>`;
+    else if (glassPage === 2) body.innerHTML = `<span class="glass-eyebrow">SCHNELLBUCHUNG</span><span class="glass-value" style="font-size:clamp(28px,6vw,44px)">＋</span><span class="glass-description">Nutze die Spracheingabe auf dem Computer, um eine Buchung vorzubereiten.</span><div class="glass-divider"></div><span class="glass-tip">Spracheingabe erfolgt über die Web-App</span>`;
     else body.innerHTML = `<span class="glass-eyebrow">OFFENE BETRÄGE</span><div class="glass-mini-row"><span>Du schuldest</span><b>${money(debtsTotal('owed'))}</b></div><div class="glass-mini-row"><span>Dir geschuldet</span><b>${money(debtsTotal('lent'))}</b></div><div class="glass-divider"></div><span class="glass-description">${state.debts.filter((d) => d.paid < d.amount).map((d) => `${escapeHtml(d.person)} · ${money(d.amount - d.paid)}`).join('<br>') || 'Alles ausgeglichen'}</span><span class="glass-tip">Weiterwischen zur Übersicht</span>`;
     $('#glass-clock').textContent = new Intl.DateTimeFormat('de-DE', { hour: '2-digit', minute: '2-digit' }).format(new Date());
   };
@@ -158,7 +131,10 @@
   $('#glass-exit').addEventListener('click', () => { $('#glass-overlay').classList.remove('open'); $('#glass-overlay').setAttribute('aria-hidden', 'true'); });
   $('#glass-overlay').addEventListener('click', (e) => { if (e.target.closest('.glass-device')) { const rect = $('.glass-device').getBoundingClientRect(); moveGlass(e.clientX > rect.left + rect.width / 2 ? 1 : -1); } });
   document.addEventListener('keydown', (e) => { if ($('#glass-overlay').classList.contains('open')) { if (['ArrowRight', 'ArrowDown'].includes(e.key)) moveGlass(1); if (['ArrowLeft', 'ArrowUp'].includes(e.key)) moveGlass(-1); if (e.key === 'Escape') $('#glass-exit').click(); } else if (e.key === 'Escape') closeModals(); });
-  const initial = location.hash.slice(1); if ($(`#page-${initial}`)) setPage(initial); else render();
+  const setup = $('#setup-screen'), shell = $('.app-shell');
+  $('#pair-form').addEventListener('submit', async (e) => { e.preventDefault(); const button = $('#pair-submit'); button.disabled = true; $('#pair-error').textContent = ''; try { const response = await fetch('/api/pair/claim', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: $('#pair-code').value }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || 'Kopplung fehlgeschlagen.'); await boot(); } catch (error) { $('#pair-error').textContent = error.message; } finally { button.disabled = false; } });
+  async function boot() { try { const status = await fetch('/api/app-status').then(r => r.json()); if (!status.connected) { setup.hidden = false; shell.hidden = true; return; } state = await fetch('/api/state').then(r => r.json()); setup.hidden = true; shell.hidden = false; const initial = location.hash.slice(1); if ($(`#page-${initial}`)) setPage(initial); else render(); } catch { setup.hidden = false; shell.hidden = true; $('#pair-error').textContent = 'Saldo ist gerade nicht erreichbar. Bitte lade die Seite erneut.'; } }
+  boot();
   if (window.matchMedia('(max-width: 650px) and (max-height: 650px)').matches) {
     document.body.classList.add('glasses-mode');
     $('#glass-overlay').classList.add('open');

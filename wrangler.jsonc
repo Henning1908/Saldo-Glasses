@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "saldo-glasses",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-11-10",
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": { "directory": "./site", "binding": "ASSETS", "run_worker_first": true },
+  "d1_databases": [{ "binding": "DB", "database_name": "saldo-glasses", "database_id": "1375d253-1540-4bc6-a2b0-a5d2097e3931", "migrations_dir": "migrations" }]
+}

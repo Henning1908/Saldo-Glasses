@@ -1,43 +1,56 @@
-# Saldo — persönlicher Finanzassistent
+# Saldo Glasses
 
-Web-App für die Verwaltung selbst erfasster Einnahmen, Ausgaben, Budgets und privater Schulden. Die Brillenansicht ist für das 600 × 600 Meta Ray-Ban Display angelegt.
+<p align="center"><img src="site/images/meta-display-apps-logo.svg" alt="Meta Display Apps" width="74"></p>
 
-## Lokal starten
+**Deine Finanzen auf einen Blick auf Meta Display Glasses.** Kopple Brille und Computer einmal per Kurzcode und erfasse Einnahmen, Ausgaben, Budgets und offene Beträge selbst.
 
-Die App besteht aus statischen HTML-, CSS- und JavaScript-Dateien im Ordner `site/`. Mit der [Cloudflare Pages CLI](https://developers.cloudflare.com/pages/get-started/direct-upload/) lässt sie sich lokal starten:
+[Saldo öffnen](https://saldo-glasses.henning-orbit-calendar.workers.dev/) · [Brillenansicht](https://saldo-glasses.henning-orbit-calendar.workers.dev/glasses.html) · [Meta Display Apps](https://github.com/Henning1908)
 
-```sh
-npx wrangler pages dev ./site
-```
+Teil von **Meta Display Apps** · [Orbit Calendar](https://orbit-calendar.henning-orbit-calendar.workers.dev/) · [WebUntis Glasses](https://webuntis-glasses.henning-orbit-calendar.workers.dev/)
 
-Alternativ kann der Ordner mit einem beliebigen lokalen Webserver geöffnet werden.
+<img src="docs/saldo-hero.svg" alt="Saldo zeigt die leere Monatsübersicht auf Computer und Display-Brille" width="100%">
 
-## Veröffentlichen
+---
 
-Der Quellcode liegt in `Henning1908/Saldo-Glasses`. Die Live-Version unter `saldo-glasses.pages.dev` ist aktuell als Cloudflare-Pages-Direct-Upload eingerichtet. Änderungen aus GitHub erscheinen dadurch nicht automatisch auf der Website. Zum erneuten Veröffentlichen den Ordner `site/` im Cloudflare-Projekt hochladen oder Wrangler verwenden:
+## Dein Geld, in deinem Blick
 
-```sh
-npx wrangler pages deploy ./site --project-name=saldo-glasses
-```
+Saldo zeigt deine manuell erfassten Finanzdaten am Computer und auf deiner Brille. Die App startet vollständig leer. Es gibt keine Beispieldaten und keine Bankverknüpfung.
 
-Für automatische Deployments kann das GitHub-Repository in den Pages-Projekteinstellungen als Quelle verbunden werden. Als Build-Ausgabeordner `site` eintragen und den Build-Befehl leer lassen.
+### Loslegen
 
-## Auf der Meta Ray-Ban Display Glasses öffnen
-
-Nach dem Deployment die HTTPS-Adresse in der Meta-AI-App unter den Einstellungen der Display-Brille bei **App connections → Add a Web App** hinzufügen. Für die Brillenansicht genügt HTML, CSS und JavaScript; diese App nutzt die Display-Web-Apps und keine native Begleit-App.
-
-Die Vorschau über **Brillenansicht** ist am Desktop oder Handy bedienbar. Innerhalb der Vorschau wechseln Links-/Rechts-Pfeiltasten oder ein Tipp auf die jeweilige Displayhälfte zwischen Ergebnis, letzter Buchung, Schnellbuchungs-Hinweis und offenen Beträgen.
+1. Öffne Saldo in der Meta AI App unter **App connections → Add a Web App** und füge `https://saldo-glasses.henning-orbit-calendar.workers.dev/glasses.html` hinzu.
+2. Öffne Saldo auf der Display-Brille. Auf dem Brillendisplay erscheint ein sechsstelliger Code.
+3. Öffne die [Saldo Web-App](https://saldo-glasses.henning-orbit-calendar.workers.dev/) auf deinem Computer und gib den Code ein. Er ist zehn Minuten gültig.
+4. Erfasse deine Buchungen im Dashboard. Die Brillenansicht aktualisiert sich automatisch.
 
 ## Funktionen
 
-- Einnahmen und Ausgaben mit Kategorie, Beschreibung und Datum erfassen
-- Optionale Browser-Spracherkennung mit Bestätigung vor dem Speichern
-- Monatswerte und Ergebnis automatisch aus Buchungen berechnen
-- Eigene Budgetlimits einrichten und den Verbrauch verfolgen
-- Schulden und verliehenes Geld samt Teilrückzahlungen verwalten
-- Transaktionen filtern, durchsuchen, löschen und als CSV exportieren
-- Persistenz im Browser über `localStorage`
+- Einnahmen und Ausgaben manuell erfassen, filtern und als CSV exportieren
+- Monatsübersicht und Statistiken, die mit deinen eigenen Buchungen beginnen
+- Budgets und offene Beträge verwalten
+- Brillenansicht mit Monatsübersicht und letzter Buchung
+- Spracheingabe im Web-Dashboard, wenn der Browser sie unterstützt
 
-## Datenmodell und Grenzen
+## Datenschutz
 
-Die aktuelle Version speichert Daten lokal im Browserprofil. Es gibt noch keine Benutzerkonten, zentrale Datenbank oder Synchronisierung zwischen Geräten. Keine Bankverknüpfung. Die Beispieldaten sind lokal und können über die App ergänzt oder gelöscht werden. Browser-Spracherkennung hängt vom Browser ab und wird nicht von allen Browsern angeboten.
+- Saldo fragt keine Bankdaten ab und verbindet keine Finanzkonten.
+- Der Finanzbereich wird verschlüsselt in Cloudflare D1 gespeichert.
+- Brille und Computer werden über einen kurzlebigen Einmalcode verbunden.
+- Die Brille erhält nur die angezeigten Finanzübersichten. Sie verlangt keine Zugangsdaten.
+- Das Projekt ist für den persönlichen Gebrauch ausgelegt.
+
+## Lokal entwickeln
+
+```sh
+npm install
+npx wrangler d1 migrations apply saldo-glasses --local
+npx wrangler dev
+```
+
+Für den lokalen Worker `.dev.vars` mit einem zufälligen `SALDO_ENCRYPTION_KEY` anlegen. Für Cloudflare `npx wrangler secret put SALDO_ENCRYPTION_KEY` verwenden und anschließend `npx wrangler deploy` ausführen.
+
+## Im Meta Display Apps Ökosystem
+
+Saldo folgt demselben Brille-zu-Computer-Kopplungsablauf wie [WebUntis Glasses](https://github.com/Henning1908/WebUntis-Glasses) und fügt sich in die Meta Display Apps Familie rund um [Orbit Calendar](https://github.com/Henning1908/orbit-calendar-glasses) ein.
+
+[Quellcode auf GitHub](https://github.com/Henning1908/Saldo-Glasses) · [Cloudflare Worker](https://saldo-glasses.henning-orbit-calendar.workers.dev/)

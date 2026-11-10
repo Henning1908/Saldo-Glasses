@@ -1,0 +1,12 @@
+{
+  "name": "saldo-glasses",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:local": "wrangler d1 migrations apply saldo-glasses --local",
+    "db:remote": "wrangler d1 migrations apply saldo-glasses --remote"
+  },
+  "devDependencies": { "wrangler": "^4.160.0" }
+}
