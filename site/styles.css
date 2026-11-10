@@ -20,3 +20,58 @@
 .debt-actions{display:flex;align-items:center;gap:5px;margin-left:auto}.debt-actions button{flex:none}
 
 .glass-value.positive{color:var(--green)}.glass-value.negative{color:var(--red)}.glass-value.neutral{color:var(--text)}
+
+/* Transaction rows keep the name and its supporting details on separate lines. */
+.transaction-main>span:last-child{display:block;flex:1;min-width:0;overflow:hidden}
+.transaction-title,.transaction-note{display:block;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.transaction-title{font-size:12px;line-height:1.3;letter-spacing:-.01em;color:#edf6ff}
+.transaction-note{font-size:10px;line-height:1.35;margin-top:4px;color:#9fb0c4}
+@media(max-width:680px){
+  .transaction-row{grid-template-columns:minmax(0,1fr) auto auto;gap:8px;min-height:64px;padding:10px 2px}
+  .transaction-row>.category-tag{display:none}
+  .transaction-row>.date-cell{display:block;font-size:10px;white-space:nowrap}
+  .transaction-row .transaction-main{gap:9px;min-width:0}
+  .transaction-row .transaction-icon{flex:0 0 32px;width:32px;height:32px}
+  .transaction-row .transaction-title{font-size:12px}
+  .transaction-row .transaction-note{font-size:10px}
+  .transaction-row .amount-cell{font-size:12px;gap:3px}
+  .full-list-row{grid-template-columns:minmax(0,1fr) auto;padding:12px 9px;gap:3px 8px}
+  .full-list-row .transaction-main{grid-column:1;grid-row:1;min-width:0;gap:8px}
+  .full-list-row>.category-tag{display:none}
+  .full-list-row .date-cell{display:block;grid-column:1;grid-row:2;margin-left:36px;font-size:10px}
+  .full-list-row .amount-cell{grid-column:2;grid-row:1 / span 2;align-self:center;white-space:nowrap;font-size:11px}
+}
+@media(max-width:390px){
+  .transaction-row{grid-template-columns:minmax(0,1fr) auto;gap:4px 8px}
+  .transaction-row>.date-cell{grid-column:1;margin-left:41px;margin-top:-9px;font-size:9px}
+  .transaction-row>.amount-cell{grid-column:2;grid-row:1 / span 2;font-size:11px}
+  .full-list-row .amount-cell{font-size:10px}
+}
+
+.mobile-more{display:none}.mobile-more-menu{display:none}
+@media(max-width:680px){
+  .sidebar{overflow:visible}
+  .nav-list{overflow-x:auto;overflow-y:visible}
+  .nav-list>.nav-item[data-page="debts"],.nav-list>.nav-item[data-page="statistics"],.nav-list>.nav-item[data-page="settings"]{display:none!important}
+  .nav-list>.mobile-more{display:flex}
+  .mobile-more-menu:not([hidden]){position:absolute;top:54px;right:10px;z-index:25;display:grid;gap:4px;width:min(240px,calc(100vw - 20px));padding:8px;border:1px solid var(--border);border-radius:15px;background:#0b1d2e;box-shadow:0 18px 50px #0009}
+  .mobile-more-menu .nav-item{justify-content:flex-start;width:100%;height:43px;padding:0 12px;font-size:12px}
+  .mobile-more-menu .nav-item.active:before{display:block;left:0}
+}
+@media(max-width:390px){.nav-list .nav-count{display:none}}
+
+@media(min-width:681px) and (max-width:800px){
+  .sidebar{width:190px;padding-left:11px;padding-right:11px}
+  .sidebar .brand>span:last-child{display:grid}
+  .sidebar .workspace-label{display:block;font-size:10px}
+  .sidebar .nav-list{margin-top:26px;overflow:visible}
+  .sidebar .nav-item{height:40px;justify-content:flex-start;padding:0 8px;font-size:11px;gap:8px}
+  .sidebar .nav-count{display:inline-block}
+  .main-content{width:calc(100% - 190px);padding-left:18px;padding-right:18px}
+}
+
+@media(max-width:680px){
+  .sidebar .nav-item{min-width:0;padding:0 6px;font-size:9px;gap:4px}
+  .sidebar .nav-icon{width:13px;font-size:12px}
+  .sidebar .nav-count{padding:1px 4px;font-size:8px}
+}
