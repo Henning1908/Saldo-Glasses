@@ -52,7 +52,7 @@ async function route(request, env) {
   const url = new URL(request.url)
   try {
     if ((request.method === 'GET' || request.method === 'HEAD') && url.pathname === '/.well-known/meta-wearables-manifest.json') {
-      const body = JSON.stringify({ version: 1, name: 'Saldo', description: 'Deine Finanzen auf einen Blick.', appearance: { theme_color: '#53C8F5', icon: { src: '../images/saldo-mark.svg' } } })
+      const body = JSON.stringify({ version: 1, name: 'Saldo', description: 'Your finances at a glance.', appearance: { theme_color: '#53C8F5', icon: { src: '../images/saldo-mark.svg' } } })
       return new Response(request.method === 'HEAD' ? null : body, { headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=3600' } })
     }
     if (request.method === 'POST' && url.pathname === '/api/glasses/pair') {
@@ -67,9 +67,9 @@ async function route(request, env) {
     }
     if (request.method === 'POST' && url.pathname === '/api/pair/claim') {
       const body = await request.json().catch(() => ({})), code = String(body.code || '').replace(/\s/g, '')
-      if (!/^\d{6}$/.test(code)) return json({ error: 'Bitte den sechsstelligen Verbindungscode eingeben.' }, 400)
+      if (!/^\d{6}$/.test(code)) return json({ error: 'Enter the six-digit pairing code.' }, 400)
       const pair = await env.DB.prepare("SELECT id,created_at FROM pairings WHERE code=? AND status='waiting'").bind(code).first()
-      if (!pair || Date.now() - pair.created_at > PAIR_TTL) return json({ error: 'Code ungültig oder abgelaufen. Erzeuge auf der Brille einen neuen.' }, 400)
+      if (!pair || Date.now() - pair.created_at > PAIR_TTL) return json({ error: 'Code is invalid or expired. Generate a new one on your glasses.' }, 400)
       let profile = await load(env)
       if (!profile) profile = { ...EMPTY_STATE, dashboardToken: token() }
       await save(env, profile)
@@ -82,31 +82,31 @@ async function route(request, env) {
     }
     if (url.pathname === '/api/state' && request.method === 'GET') {
       const profile = await load(env)
-      if (!dashboardAuth(request, profile)) return json({ error: 'Bitte zuerst Brille und PC koppeln.' }, 401)
+      if (!dashboardAuth(request, profile)) return json({ error: 'Please pair your glasses and computer first.' }, 401)
       return json({ transactions: profile.transactions || [], budgets: profile.budgets || [], debts: profile.debts || [], groups: profile.groups || [], categories: profile.categories || [], recurring: profile.recurring || [] })
     }
     if (url.pathname === '/api/state' && request.method === 'PUT') {
       const profile = await load(env)
-      if (!dashboardAuth(request, profile)) return json({ error: 'Sitzung abgelaufen. Bitte erneut koppeln.' }, 401)
+      if (!dashboardAuth(request, profile)) return json({ error: 'Session expired. Please pair your devices again.' }, 401)
       const body = await request.json().catch(() => ({}))
-      for (const key of ['transactions', 'budgets', 'debts', 'groups', 'categories', 'recurring']) { if (body[key] !== undefined && (!Array.isArray(body[key]) || body[key].length > 10000)) return json({ error: 'Ungültige Daten.' }, 400) }
+      for (const key of ['transactions', 'budgets', 'debts', 'groups', 'categories', 'recurring']) { if (body[key] !== undefined && (!Array.isArray(body[key]) || body[key].length > 10000)) return json({ error: 'Invalid data.' }, 400) }
         await save(env, { ...profile, transactions: body.transactions ?? profile.transactions ?? [], budgets: body.budgets ?? profile.budgets ?? [], debts: body.debts ?? profile.debts ?? [], groups: body.groups ?? profile.groups ?? [], categories: body.categories ?? profile.categories ?? [], recurring: body.recurring ?? profile.recurring ?? [] })
       return json({ saved: true })
     }
     if (url.pathname === '/api/glasses/state' && request.method === 'GET') {
-      if (!await deviceAuth(request, env)) return json({ error: 'Brille ist noch nicht gekoppelt.' }, 401)
+      if (!await deviceAuth(request, env)) return json({ error: 'Glasses are not paired yet.' }, 401)
       const profile = await load(env)
       return json({ transactions: profile?.transactions || [], budgets: profile?.budgets || [], debts: profile?.debts || [], groups: profile?.groups || [], categories: profile?.categories || [] })
     }
     if (request.method === 'POST' && url.pathname === '/api/glasses/transaction') {
-      if (!await deviceAuth(request, env)) return json({ error: 'Brille ist noch nicht gekoppelt.' }, 401)
+      if (!await deviceAuth(request, env)) return json({ error: 'Glasses are not paired yet.' }, 401)
       const profile = await load(env)
-      if (!profile) return json({ error: 'Saldo wurde noch nicht eingerichtet.' }, 404)
+      if (!profile) return json({ error: 'Saldo has not been set up yet.' }, 404)
       const body = await request.json().catch(() => ({}))
       const type = body.type === 'income' ? 'income' : body.type === 'expense' ? 'expense' : ''
       const amount = Number(body.amount), category = String(body.category || '').trim().slice(0, 48), note = String(body.note || '').trim().slice(0, 100)
       const date = /^\d{4}-\d{2}-\d{2}$/.test(String(body.date || '')) ? body.date : new Date().toISOString().slice(0, 10)
-      if (!type || !Number.isFinite(amount) || amount <= 0 || amount > 100000000 || !category) return json({ error: 'Bitte Typ, Kategorie und einen gültigen Betrag angeben.' }, 400)
+      if (!type || !Number.isFinite(amount) || amount <= 0 || amount > 100000000 || !category) return json({ error: 'Enter a type, category and valid amount.' }, 400)
       const transaction = { id: `tx-${token(12)}`, type, amount: Math.round(amount * 100) / 100, category, groupId: '', note: note || category, date: `${date}T12:00:00`, payment: 'Brille' }
       const transactions = [...(profile.transactions || []), transaction]
       await save(env, { ...profile, transactions })
@@ -114,17 +114,17 @@ async function route(request, env) {
     }
     if (request.method === 'POST' && url.pathname === '/api/disconnect') {
       const profile = await load(env)
-      if (!dashboardAuth(request, profile)) return json({ error: 'Nicht angemeldet.' }, 401)
+      if (!dashboardAuth(request, profile)) return json({ error: 'Not signed in.' }, 401)
       await env.DB.prepare('DELETE FROM app_state WHERE id=1').run()
       await env.DB.prepare('DELETE FROM pairings').run()
       const headers = new Headers(); headers.append('Set-Cookie', 'saldo_session=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Strict'); headers.append('Set-Cookie', 'saldo_device=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Strict');
       return json({ connected: false }, 200, headers)
     }
     if (request.method === 'GET' || request.method === 'HEAD') return env.ASSETS.fetch(request)
-    return json({ error: 'Nicht gefunden.' }, 404)
+    return json({ error: 'Not found.' }, 404)
   } catch (error) {
     console.error('Saldo Worker error:', error.message)
-    return json({ error: 'Saldo konnte die Anfrage nicht verarbeiten.' }, 500)
+    return json({ error: 'Saldo could not process the request.' }, 500)
   }
 }
 export default { fetch: route }
