@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080c0d" />
+    <meta name="description" content="Dein persönlicher Finanzassistent für Web und Meta Ray-Ban Display Glasses." />
+    <title>Saldo — Dein Finanzüberblick</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Hauptnavigation">
+        <a class="brand" href="#overview" aria-label="Meta Display Apps — Saldo Startseite"><span class="brand-mark">◉</span><span class="brand-copy"><small>META DISPLAY APPS</small><b>SALDO<span class="brand-dot">.</span></b></span></a>
+        <div class="workspace-label">PERSÖNLICH</div>
+        <nav class="nav-list">
+          <button class="nav-item active" data-page="overview"><span class="nav-icon">⌂</span>Übersicht</button>
+          <button class="nav-item" data-page="transactions"><span class="nav-icon">↕</span>Buchungen<span class="nav-count" id="transaction-count">0</span></button>
+          <button class="nav-item" data-page="budgets"><span class="nav-icon">◷</span>Budgets</button>
+          <button class="nav-item" data-page="debts"><span class="nav-icon">⇄</span>Schulden</button>
+          <button class="nav-item" data-page="statistics"><span class="nav-icon">▥</span>Statistiken</button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="privacy-note"><span class="privacy-icon">◈</span><div><b>Deine Daten bleiben bei dir</b><p>Keine Bankverbindung. Kein Tracking.</p></div></div>
+          <div class="profile"><div class="avatar">H</div><div class="profile-copy"><b>Henning</b><span>Mein Finanzbereich</span></div><button class="icon-button" title="Einstellungen" aria-label="Einstellungen">···</button></div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="breadcrumb"><span>Mein Bereich</span><span class="crumb-sep">/</span><b id="page-title">Übersicht</b></div>
+          <div class="top-actions"><div class="month-picker"><button id="month-prev" aria-label="Vorheriger Monat">‹</button><span id="month-label">November 2026</span><button id="month-next" aria-label="Nächster Monat">›</button></div><button class="glass-toggle" id="glass-toggle"><span>◉</span> Brillenansicht</button><button class="avatar top-avatar" aria-label="Profil">H</button></div>
+        </header>
+
+        <section class="page active" id="page-overview">
+          <div class="page-heading"><div><div class="eyebrow"><span class="live-dot"></span> DEIN GELD. IMMER IM BLICK.</div><h1>Deine Finanzen<span class="wave">.</span></h1><p class="subheading">Hier ist, was diesen Monat mit deinem Geld passiert.</p></div><button class="primary-button" data-open-entry><span>＋</span> Buchung hinzufügen</button></div>
+          <div class="overview-grid">
+            <article class="result-card card"><div class="card-top"><span class="card-label">MONATSERGEBNIS</span><span class="period-pill"><span class="live-dot"></span> NOVEMBER</span></div><div class="result-number" id="monthly-result">−324,20 €</div><div class="result-caption" id="result-caption">Du hast mehr ausgegeben als eingenommen.</div><div class="result-divider"></div><div class="result-foot"><span class="trend-icon">↗</span><span id="month-comparison">Manuell erfasste Buchungen</span><span class="result-foot-right">seit Monatsbeginn</span></div><div class="sparkline" aria-hidden="true"><svg viewBox="0 0 380 74" preserveAspectRatio="none"><path class="spark-fill" d="M0 54 C25 45 26 61 52 43 S85 38 106 48 S139 27 166 35 S199 15 221 29 S252 37 274 20 S310 34 333 13 S360 22 380 4 L380 74 L0 74Z"/><path class="spark-path" d="M0 54 C25 45 26 61 52 43 S85 38 106 48 S139 27 166 35 S199 15 221 29 S252 37 274 20 S310 34 333 13 S360 22 380 4"/></svg></div></article>
+            <article class="metric-card card"><div class="metric-heading"><span class="metric-icon income-icon">↙</span><span class="card-label">EINNAHMEN</span><span class="metric-menu">···</span></div><div class="metric-number" id="income-total">850,00 €</div><div class="metric-foot"><span>im November</span><span class="metric-chip positive">↑ Einnahmen</span></div><div class="mini-bars" aria-hidden="true"><i style="height:35%"></i><i style="height:51%"></i><i style="height:45%"></i><i style="height:69%"></i><i style="height:53%"></i><i style="height:84%"></i><i style="height:63%"></i><i style="height:100%"></i><i style="height:78%"></i><i style="height:93%"></i><i style="height:72%"></i><i class="bar-active" style="height:88%"></i></div></article>
+            <article class="metric-card card"><div class="metric-heading"><span class="metric-icon expense-icon">↗</span><span class="card-label">AUSGABEN</span><span class="metric-menu">···</span></div><div class="metric-number" id="expense-total">1.174,20 €</div><div class="metric-foot"><span>im November</span><span class="metric-chip neutral">11 Buchungen</span></div><div class="mini-bars expense-bars" aria-hidden="true"><i style="height:40%"></i><i style="height:59%"></i><i style="height:33%"></i><i style="height:77%"></i><i style="height:57%"></i><i style="height:91%"></i><i style="height:69%"></i><i style="height:100%"></i><i style="height:74%"></i><i style="height:86%"></i><i style="height:63%"></i><i class="bar-expense-active" style="height:96%"></i></div></article>
+          </div>
+          <div class="content-grid">
+            <section class="panel card transactions-panel"><div class="section-header"><div><h2>Letzte Buchungen</h2><p>Deine letzten Bewegungen auf einen Blick</p></div><button class="text-button" data-page-link="transactions">Alle Buchungen <span>→</span></button></div><div class="transaction-list" id="recent-list"></div></section>
+            <div class="right-column">
+              <section class="panel card budget-panel"><div class="section-header"><div><h2>Deine Budgets</h2><p>November 2026</p></div><button class="icon-button" data-page-link="budgets" aria-label="Budgets anzeigen">↗</button></div><div id="budget-list"></div><button class="budget-link" data-page-link="budgets">Alle Budgets ansehen <span>→</span></button></section>
+              <section class="debt-card card"><div class="debt-top"><div><div class="card-label">OFFENE BETRÄGE</div><h2>Alles im Blick.</h2></div><span class="debt-symbol">⇄</span></div><div class="debt-numbers"><div><span>Du schuldest</span><b id="owed-total">120,00 €</b></div><i></i><div><span>Dir geschuldet</span><b id="lent-total">75,00 €</b></div></div><button class="debt-link" data-page-link="debts">Schulden verwalten <span>→</span></button></section>
+            </div>
+          </div>
+          <footer class="page-footer"><span>Saldo <i>·</i> deine Finanzen, in deinem Tempo.</span><span><span class="secure-mark">◈</span> Privat & sicher</span></footer>
+        </section>
+
+        <section class="page" id="page-transactions"><div class="page-heading"><div><div class="eyebrow"><span class="live-dot"></span> DEIN GELD, DEINE ÜBERSICHT</div><h1>Buchungen</h1><p class="subheading">Alle Einnahmen und Ausgaben an einem Ort.</p></div><div class="heading-actions"><button class="secondary-button" id="export-csv">↓ Exportieren</button><button class="primary-button" data-open-entry><span>＋</span> Neue Buchung</button></div></div><div class="list-toolbar"><div class="filter-pills"><button class="filter-pill active" data-filter="all">Alle</button><button class="filter-pill" data-filter="expense">Ausgaben</button><button class="filter-pill" data-filter="income">Einnahmen</button></div><label class="search-box"><span>⌕</span><input id="transaction-search" placeholder="Suchen …" aria-label="Buchungen suchen" /></label></div><section class="card full-list-card"><div class="table-head"><span>BUCHUNG</span><span>KATEGORIE</span><span>DATUM</span><span class="align-right">BETRAG</span></div><div id="full-list"></div></section></section>
+
+        <section class="page" id="page-budgets"><div class="page-heading"><div><div class="eyebrow"><span class="live-dot"></span> MONATLICHE LIMITS</div><h1>Budgets</h1><p class="subheading">Gib deinen Ausgaben einen Rahmen, der zu dir passt.</p></div><button class="primary-button" id="add-budget"><span>＋</span> Budget hinzufügen</button></div><div class="budget-summary card"><div><span class="card-label">MONATLICHES GESAMTBUDGET</span><b id="budget-total">520 €</b></div><div><span class="card-label">BEREITS AUSGEGEBEN</span><b id="budget-spent">304 €</b></div><div><span class="card-label">NOCH VERFÜGBAR</span><b id="budget-remaining">216 €</b></div><div class="summary-progress"><span id="budget-progress"></span></div></div><div class="budgets-grid" id="budgets-grid"></div></section>
+
+        <section class="page" id="page-debts"><div class="page-heading"><div><div class="eyebrow"><span class="live-dot"></span> GELD ZWISCHEN MENSCHEN</div><h1>Schulden & Verliehenes</h1><p class="subheading">Behalte Rückzahlungen und offene Beträge einfach im Blick.</p></div><button class="primary-button" id="add-debt"><span>＋</span> Betrag hinzufügen</button></div><div class="debt-overview-grid"><article class="debt-overview-card owe"><span class="metric-icon expense-icon">↗</span><span class="card-label">DU SCHULDEST</span><b id="owed-main">120,00 €</b><p>Betrag, den du zurückzahlen möchtest</p></article><article class="debt-overview-card lent"><span class="metric-icon income-icon">↙</span><span class="card-label">DIR GESCHULDET</span><b id="lent-main">75,00 €</b><p>Betrag, den du zurückbekommst</p></article></div><div class="debt-lists"><section class="card panel"><div class="section-header"><div><h2>Offene Verbindlichkeiten</h2><p>Was du noch zurückzahlen möchtest</p></div></div><div id="owed-list"></div></section><section class="card panel"><div class="section-header"><div><h2>Offene Forderungen</h2><p>Was dir noch zurückgezahlt wird</p></div></div><div id="lent-list"></div></section></div></section>
+
+        <section class="page" id="page-statistics"><div class="page-heading"><div><div class="eyebrow"><span class="live-dot"></span> ZAHLEN, DIE DIR WEITERHELFEN</div><h1>Statistiken</h1><p class="subheading">Verstehe, wohin dein Geld fließt.</p></div><div class="period-pill"><span class="live-dot"></span> NOVEMBER 2026</div></div><div class="stats-grid"><article class="card stats-chart"><div class="section-header"><div><h2>Einnahmen & Ausgaben</h2><p>Entwicklung der letzten 6 Monate</p></div></div><div class="chart-legend"><span><i class="legend-income"></i>Einnahmen</span><span><i class="legend-expense"></i>Ausgaben</span></div><div class="chart-bars" id="chart-bars"></div></article><article class="card stats-categories"><div class="section-header"><div><h2>Ausgaben nach Kategorie</h2><p>Dieser Monat</p></div></div><div class="donut-wrap"><div class="donut" id="category-donut"><div><b id="donut-total">1.174 €</b><span>gesamt</span></div></div><div class="category-legend" id="category-legend"></div></div></article></div></section>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="entry-modal" aria-hidden="true"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="modal-close" data-close-modal aria-label="Schließen">×</button><div class="eyebrow"><span class="live-dot"></span> NEUE BUCHUNG</div><h2 id="modal-title">Was ist passiert?</h2><p class="modal-subtitle">Trage deine Buchung ein — ganz wie es für dich passt.</p><div class="entry-mode-switch"><button class="mode-button active" data-type="expense">↗ Ausgabe</button><button class="mode-button" data-type="income">↙ Einnahme</button></div><form id="entry-form"><label class="form-label">BETRAG IN EURO<div class="amount-input"><span>€</span><input id="entry-amount" type="number" step="0.01" min="0.01" placeholder="0,00" required /></div></label><label class="form-label">KATEGORIE<select id="entry-category"></select></label><label class="form-label">BESCHREIBUNG <span class="optional">OPTIONAL</span><input id="entry-description" type="text" placeholder="z. B. Mittagessen in der Mensa" /></label><div class="voice-row"><button type="button" class="voice-button" id="voice-button"><span>◉</span> Per Spracheingabe</button><span id="voice-status">„12 Euro für Essen“</span></div><button class="primary-button submit-button" type="submit">Buchung speichern <span>→</span></button></form></section></div>
+    <div class="modal-backdrop" id="debt-modal" aria-hidden="true"><section class="modal small-modal" role="dialog" aria-modal="true" aria-labelledby="debt-modal-title"><button class="modal-close" data-close-modal aria-label="Schließen">×</button><div class="eyebrow"><span class="live-dot"></span> SCHULDEN & VERLIEHENES</div><h2 id="debt-modal-title">Betrag hinzufügen</h2><p class="modal-subtitle">Halte fest, was zwischen euch offen ist.</p><form id="debt-form"><label class="form-label">ART<select id="debt-direction"><option value="lent">Mir geschuldet</option><option value="owed">Ich schulde</option></select></label><label class="form-label">PERSON<input id="debt-person" placeholder="Name" required /></label><label class="form-label">BETRAG IN EURO<div class="amount-input"><span>€</span><input id="debt-amount" type="number" step="0.01" min="0.01" placeholder="0,00" required /></div></label><label class="form-label">GRUND <span class="optional">OPTIONAL</span><input id="debt-note" placeholder="z. B. Kinotickets" /></label><button class="primary-button submit-button" type="submit">Betrag speichern <span>→</span></button></form></section></div>
+
+    <div class="glass-overlay" id="glass-overlay" aria-hidden="true"><button class="glass-exit" id="glass-exit">← Zurück zur Web-App</button><div class="glass-device"><div class="glass-status"><span>● SALDO</span><span id="glass-clock">12:45</span></div><div class="glass-body" id="glass-body"></div><div class="glass-controls"><span>←</span><span>WISCHEN ZUM NAVIGIEREN</span><span>→</span></div></div><div class="glass-hint">Meta Ray-Ban Display · 600 × 600</div></div>
+
+    <div class="toast" id="toast" role="status"></div>
+    <script src="/app.js"></script>
+  </body>
+</html>
