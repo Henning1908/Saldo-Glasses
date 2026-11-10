@@ -1,7 +1,7 @@
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
 const PAIR_TTL = 10 * 60 * 1000
-const EMPTY_STATE = { transactions: [], budgets: [], debts: [] }
+const EMPTY_STATE = { transactions: [], budgets: [], debts: [], groups: [], categories: [], recurring: [] }
 const json = (body, status = 200, extraHeaders = {}) => { const headers = new Headers({ 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }); if (extraHeaders instanceof Headers) extraHeaders.forEach((value, key) => headers.append(key, value)); else Object.entries(extraHeaders).forEach(([key, value]) => headers.append(key, value)); return new Response(JSON.stringify(body), { status, headers }) }
 const token = (bytes = 32) => [...crypto.getRandomValues(new Uint8Array(bytes))].map((b) => b.toString(16).padStart(2, '0')).join('')
 const hash = async (value) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', encoder.encode(value)))].map((b) => b.toString(16).padStart(2, '0')).join('')
@@ -83,14 +83,14 @@ async function route(request, env) {
     if (url.pathname === '/api/state' && request.method === 'GET') {
       const profile = await load(env)
       if (!dashboardAuth(request, profile)) return json({ error: 'Bitte zuerst Brille und PC koppeln.' }, 401)
-      return json({ transactions: profile.transactions || [], budgets: profile.budgets || [], debts: profile.debts || [] })
+      return json({ transactions: profile.transactions || [], budgets: profile.budgets || [], debts: profile.debts || [], groups: profile.groups || [], categories: profile.categories || [], recurring: profile.recurring || [] })
     }
     if (url.pathname === '/api/state' && request.method === 'PUT') {
       const profile = await load(env)
       if (!dashboardAuth(request, profile)) return json({ error: 'Sitzung abgelaufen. Bitte erneut koppeln.' }, 401)
       const body = await request.json().catch(() => ({}))
-      for (const key of ['transactions', 'budgets', 'debts']) if (!Array.isArray(body[key]) || body[key].length > 10000) return json({ error: 'Ungültige Daten.' }, 400)
-      await save(env, { ...profile, transactions: body.transactions, budgets: body.budgets, debts: body.debts })
+      for (const key of ['transactions', 'budgets', 'debts', 'groups', 'categories', 'recurring']) { if (body[key] !== undefined && (!Array.isArray(body[key]) || body[key].length > 10000)) return json({ error: 'Ungültige Daten.' }, 400) }
+        await save(env, { ...profile, transactions: body.transactions ?? profile.transactions ?? [], budgets: body.budgets ?? profile.budgets ?? [], debts: body.debts ?? profile.debts ?? [], groups: body.groups ?? profile.groups ?? [], categories: body.categories ?? profile.categories ?? [], recurring: body.recurring ?? profile.recurring ?? [] })
       return json({ saved: true })
     }
     if (url.pathname === '/api/glasses/state' && request.method === 'GET') {

@@ -25,11 +25,16 @@ Saldo zeigt deine manuell erfassten Finanzdaten am Computer und auf deiner Brill
 
 ## Funktionen
 
-- Einnahmen und Ausgaben manuell erfassen, filtern und als CSV exportieren
-- Monatsübersicht und Statistiken, die mit deinen eigenen Buchungen beginnen
-- Budgets und offene Beträge verwalten
-- Brillenansicht mit Monatsübersicht und letzter Buchung
-- Spracheingabe im Web-Dashboard, wenn der Browser sie unterstützt
+- Einnahmen und Ausgaben mit Kategorie, Gruppe, Datum, Zahlungsweg und Beschreibung erfassen, bearbeiten und löschen
+- Beträge mit einem klassischen Taschenrechnerfeld inklusive Klammern, Prozent und Punkt-vor-Strich eingeben
+- Buchungen per Spracheingabe vorbereiten; Gruppen lassen sich ebenfalls per Sprache benennen und mit Monatsbudget anlegen
+- Eigene Gruppen und Einnahme-/Ausgabekategorien erstellen und verwalten
+- Monatsübersicht, Kategorienstatistik, Gruppenausgaben und filterbare Buchungsliste mit Suche
+- Monatsbudgets für Gruppen und Kategorien sowie offene Beträge mit Teilrückzahlung verwalten
+- Wiederkehrende Buchungen wöchentlich, monatlich oder jährlich planen
+- Buchungen als CSV exportieren und alle App-Daten als JSON sichern oder wiederherstellen
+- Brillenansicht mit Monatsübersicht, letzter Buchung, Gruppen und offenen Beträgen
+- Spracheingabe wird unterstützt, wenn der Browser die Web Speech API bereitstellt
 
 ## Meta Wearables App-Zeichen
 
