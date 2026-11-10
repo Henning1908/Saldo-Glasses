@@ -14,7 +14,13 @@ Alternativ kann der Ordner mit einem beliebigen lokalen Webserver geöffnet werd
 
 ## Veröffentlichen
 
-Das GitHub-Repository `Henning1908/Saldo-Glasses` bei Cloudflare Pages als Git-Projekt verbinden. Build-Befehl leer lassen und `site` als Build-Ausgabeordner eintragen. Danach veröffentlicht Cloudflare Pages jeden Push auf `main` automatisch. Alternativ lässt sich der Ordner `site/` direkt mit Wrangler Pages deployen.
+Der Quellcode liegt in `Henning1908/Saldo-Glasses`. Die Live-Version unter `saldo-glasses.pages.dev` ist aktuell als Cloudflare-Pages-Direct-Upload eingerichtet. Änderungen aus GitHub erscheinen dadurch nicht automatisch auf der Website. Zum erneuten Veröffentlichen den Ordner `site/` im Cloudflare-Projekt hochladen oder Wrangler verwenden:
+
+```sh
+npx wrangler pages deploy ./site --project-name=saldo-glasses
+```
+
+Für automatische Deployments kann das GitHub-Repository in den Pages-Projekteinstellungen als Quelle verbunden werden. Als Build-Ausgabeordner `site` eintragen und den Build-Befehl leer lassen.
 
 ## Auf der Meta Ray-Ban Display Glasses öffnen
 

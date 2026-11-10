@@ -12,7 +12,8 @@
       { id: 't7', type: 'expense', amount: 12.4, category: 'Essen', note: 'Bäckerei', date: '2026-11-03T09:05:00' },
       { id: 't8', type: 'expense', amount: 18, category: 'Freizeit', note: 'Schwimmbad', date: '2026-11-02T16:12:00' },
       { id: 't9', type: 'income', amount: 650, category: 'Arbeit', note: 'Nebenjob', date: '2026-11-01T09:00:00' },
-      { id: 't10', type: 'expense', amount: 45, category: 'Technik', note: 'Kopfhörer', date: '2026-11-01T09:00:00' }
+      { id: 't10', type: 'expense', amount: 45, category: 'Technik', note: 'Kopfhörer', date: '2026-11-01T09:00:00' },
+      { id: 't11', type: 'expense', amount: 1028.2, category: 'Wohnen', note: 'Wohnen & Fixkosten', date: '2026-11-01T08:45:00' }
     ],
     budgets: [
       { category: 'Essen', emoji: '🍜', limit: 150, color: '#86dfba' },
