@@ -1,52 +1,58 @@
-# Saldo Glasses
+<div align="center">
 
-<p align="center"><img src="site/images/meta-display-apps-logo.svg" alt="Meta Display Apps" width="74"></p>
+<img src="docs/saldo-hero.svg" alt="Saldo finance overview for the web and Meta display glasses" width="100%">
 
-**Your finances at a glance on Meta Display Glasses.** Pair your glasses with your computer using a short code, then track the income, expenses, budgets and outstanding balances you enter yourself.
+# Saldo
 
-[Open Saldo](https://saldo-glasses.henning-orbit-calendar.workers.dev/) · [Glasses view](https://saldo-glasses.henning-orbit-calendar.workers.dev/glasses.html) · [Meta Display Apps](https://github.com/Henning1908)
+### Your money, in one clear glance.
 
-Part of **Meta Display Apps** · [Orbit Calendar](https://orbit-calendar.henning-orbit-calendar.workers.dev/) · [WebUntis Glasses](https://webuntis-glasses.henning-orbit-calendar.workers.dev/)
+A personal finance companion for the web and Meta display glasses. Enter income, expenses, budgets and balances yourself, then keep the essentials in view.
 
-<img src="docs/saldo-hero.svg" alt="Saldo overview on computer and Meta Display Glasses" width="100%">
+[Open Saldo](https://saldo-glasses.henning-orbit-calendar.workers.dev/) · [English guide](https://saldo-glasses.henning-orbit-calendar.workers.dev/guide.html) · [Anleitung auf Deutsch](https://saldo-glasses.henning-orbit-calendar.workers.dev/guide.de.html)
+
+Part of **Meta Display Apps** — explore [Orbit Calendar](https://orbit-calendar.henning-orbit-calendar.workers.dev/) and [WebUntis Glasses](https://webuntis-glasses.henning-orbit-calendar.workers.dev/).
+
+[☕ Buy me a coffee](https://gofund.me/89190630b) · [Source code](https://github.com/Henning1908/Saldo-Glasses)
+
+</div>
 
 ---
 
 ## Your money, in view
 
-Saldo shows the financial information you enter manually on your computer and glasses. It starts completely empty, with no sample data and no bank connection.
+Saldo starts empty and tracks only the financial information you enter. It does not connect to banks. Use the web dashboard to manage your finances and the glasses view for a compact overview or quick transaction entry.
 
-### Get started
+### Start in a minute
 
-1. In the Meta AI app, open **App connections → Add a Web App** and add `https://saldo-glasses.henning-orbit-calendar.workers.dev/glasses.html`.
-2. Open Saldo on your Display Glasses. A six-digit code appears on the display.
-3. Open the [Saldo web app](https://saldo-glasses.henning-orbit-calendar.workers.dev/) on your computer and enter the code. It expires after ten minutes.
-4. Add transactions in the dashboard. The glasses view updates automatically.
+Open the [online setup guide](https://saldo-glasses.henning-orbit-calendar.workers.dev/guide.html) on your phone or computer. It covers adding Saldo to Meta display glasses, first-time pairing and the optional shared device registration.
 
-## Features
+1. Enable Developer Mode, then in the Meta AI app open **App Settings → Apps → Web Apps → Connect Web App** and add `https://saldo-glasses.henning-orbit-calendar.workers.dev/glasses.html`.
+2. Open Saldo from the app grid on your glasses. If this device is not registered, a short-lived six-digit code appears.
+3. Pair directly with Saldo using the code, or sign in to your [Meta Display Apps account](https://meta-display-apps.henning-orbit-calendar.workers.dev/) and enter it under **My account** to register the glasses once for the app family.
+4. Enter transactions in Saldo. The glasses view updates automatically.
 
-- Add, edit and delete income or expenses with a category, group, date, payment method and description
-- Enter amounts with a calculator keypad, including parentheses, percentages and operator precedence
-- Prepare transactions with voice input; create groups by voice with an optional monthly budget
-- Create and manage groups and custom income and expense categories
-- View monthly and all-time results, category statistics, group spending and searchable transactions
-- Set monthly budgets for groups and categories; track outstanding balances and partial repayments
-- Schedule recurring transactions weekly, monthly or yearly
-- Export transactions as CSV and back up or restore all app data as JSON
-- View the monthly summary, latest transaction, groups and outstanding balances on glasses
-- Use voice input in browsers that support the Web Speech API
+When you use one-time device registration, later apps can recognize the same glasses without another pairing code. Each app still has its own profile, settings and data.
 
-## Meta Wearables app icon
+## What Saldo does
 
-Saldo provides a version 1 manifest at `/.well-known/meta-wearables-manifest.json`. It supplies the app name and cyan appearance. The icon is a transparent, monochrome SVG for the 64 × 64 icon area, as described in the [Meta Web Apps icon documentation](https://wearables.developer.meta.com/docs/develop/webapps/build/app-icons/).
+| Feature | How it works |
+| --- | --- |
+| Income and expenses | Add, edit and search transactions with dates, categories, groups, payment methods and notes. |
+| Budgets and balances | Set monthly limits, track money owed, and record partial repayments. |
+| Recurring items | Schedule transactions weekly, monthly or yearly. |
+| Insights | Review monthly and all-time totals, category statistics and group spending. |
+| Glasses view | Check the current summary and latest transactions, or enter a new amount from the display. |
+| Backup and export | Download CSV exports or a complete JSON backup and restore it later. |
 
-## Privacy
+![Saldo overview on a computer and Meta display glasses](docs/saldo-hero.svg)
 
-- Saldo does not request bank details or connect to financial accounts.
-- Financial data is encrypted before it is stored in Cloudflare D1.
-- Glasses and computer are paired with a short-lived one-time code.
-- The glasses receive only the financial summary shown in the app; they never need account credentials.
-- This project is designed for personal use.
+## Privacy at a glance
+
+- Saldo does not ask for bank details or connect to financial accounts.
+- Finance records are encrypted before storage in Cloudflare D1.
+- Pairing codes expire after ten minutes. Shared device registration stores a hashed device token in Meta Display Apps; app profiles remain separate.
+- Glasses receive only the Saldo information needed for the display, never account credentials.
+- Disconnect Saldo from Settings to remove its saved profile.
 
 ## Local development
 
@@ -56,10 +62,16 @@ npx wrangler d1 migrations apply saldo-glasses --local
 npx wrangler dev
 ```
 
-Create a `.dev.vars` file with a random `SALDO_ENCRYPTION_KEY` for the local Worker. For Cloudflare, run `npx wrangler secret put SALDO_ENCRYPTION_KEY`, then deploy with `npx wrangler deploy`.
+Create a `.dev.vars` file with a random `SALDO_ENCRYPTION_KEY`. To test shared account linking locally, configure `MDA_LINK_SECRET` to match the Meta Display Apps Worker. Never commit secret values, `.dev.vars` or files from `.wrangler/`.
 
-## Meta Display Apps ecosystem
+For the hosted service, set the required Cloudflare Worker secrets and deploy with `npm run deploy`. See the maintainer documentation for [architecture](docs/ARCHITECTURE.md) and [Cloudflare deployment](docs/DEPLOYMENT.md).
 
-Saldo uses the same glasses-to-computer pairing flow as [WebUntis Glasses](https://github.com/Henning1908/WebUntis-Glasses) and joins the Meta Display Apps family around [Orbit Calendar](https://github.com/Henning1908/orbit-calendar-glasses).
+## Meta Display Apps
 
-[Source code on GitHub](https://github.com/Henning1908/Saldo-Glasses) · [Cloudflare Worker](https://saldo-glasses.henning-orbit-calendar.workers.dev/)
+Meta Display Apps is a small family of glanceable tools for Meta display glasses. Browse [Orbit Calendar](https://github.com/Henning1908/orbit-calendar-glasses) for calendar events and [WebUntis Glasses](https://github.com/Henning1908/WebUntis-Glasses) for your school timetable. Visit the [app directory](https://meta-display-apps.henning-orbit-calendar.workers.dev/) to explore all three.
+
+Questions or ideas? Open an issue in this repository or read the [contribution guide](CONTRIBUTING.md). You can also [support the project](https://gofund.me/89190630b).
+
+## License
+
+Saldo Glasses is licensed under the [MIT License](LICENSE). Credit: **Henning1908**. The license does not grant rights to third-party trademarks.

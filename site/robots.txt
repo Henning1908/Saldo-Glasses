@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://saldo-glasses.henning-orbit-calendar.workers.dev/sitemap.xml

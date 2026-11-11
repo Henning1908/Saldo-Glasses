@@ -1,0 +1,3 @@
+SALDO_ENCRYPTION_KEY=replace-with-a-random-secret
+# Set this only when testing shared account linking, and use the same secret as Meta Display Apps.
+# MDA_LINK_SECRET=replace-with-the-shared-secret
