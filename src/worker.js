@@ -65,11 +65,12 @@ async function deviceAuth(request, env) {
 }
 function setCookie(name, value, shared = false) { return `${name}=${value};${shared ? ' Domain=henning-orbit-calendar.workers.dev;' : ''} Path=/; Max-Age=31536000; Secure; HttpOnly; SameSite=Strict` }
 async function createPair(env, device = token()) {
-  await env.DB.prepare('DELETE FROM pairings WHERE created_at < ? OR status = ?').bind(Date.now() - PAIR_TTL, 'waiting').run()
+  const deviceHash = await hash(device)
+  await env.DB.prepare("DELETE FROM pairings WHERE created_at < ? OR (device_hash = ? AND status = 'waiting')").bind(Date.now() - PAIR_TTL, deviceHash).run()
   for (let i = 0; i < 5; i++) {
     const id = token(12), code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, '0')
     try {
-      await env.DB.prepare('INSERT INTO pairings(id,code,device_hash,created_at,status) VALUES(?,?,?,?,\'waiting\')').bind(id, code, await hash(device), Date.now()).run()
+      await env.DB.prepare('INSERT INTO pairings(id,code,device_hash,created_at,status) VALUES(?,?,?,?,\'waiting\')').bind(id, code, deviceHash, Date.now()).run()
       return { id, code, device }
     } catch (error) { if (i === 4) throw error }
   }
