@@ -39,17 +39,17 @@ async function save(env, profile, deviceHash = '') {
 }
 const dashboardAuth = (request, profile) => Boolean(profile?.dashboardToken && cookie(request, 'saldo_session') === profile.dashboardToken)
 function sharedDeviceCookie(value) { return `mda_device=${value}; Domain=henning-orbit-calendar.workers.dev; Path=/; Max-Age=31536000; Secure; HttpOnly; SameSite=Strict` }
-async function centralDeviceForSession(request) {
+async function centralDeviceForSession(request, env) {
   const rawCookie = request.headers.get('Cookie') || ''
   if (!rawCookie) return null
-  const response = await fetch('https://meta-display-apps.henning-orbit-calendar.workers.dev/api/device/me', { headers: { Cookie: rawCookie }, signal: AbortSignal.timeout(8000) })
+  const response = await env.META_DISPLAY_APPS.fetch(new Request('https://meta-display-apps.henning-orbit-calendar.workers.dev/api/device/me', { headers: { Cookie: rawCookie }, signal: AbortSignal.timeout(8000) }))
   if (!response.ok) return null
   const data = await response.json().catch(() => null)
   return data?.connected && /^[a-f0-9]{64}$/.test(data.deviceHash || '') ? data : null
 }
 async function centralDeviceForToken(deviceToken, env) {
   if (!deviceToken || !env.MDA_LINK_SECRET) return null
-  const response = await fetch('https://meta-display-apps.henning-orbit-calendar.workers.dev/api/device/resolve', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${env.MDA_LINK_SECRET}` }, body: JSON.stringify({ deviceToken }), signal: AbortSignal.timeout(8000) })
+  const response = await env.META_DISPLAY_APPS.fetch(new Request('https://meta-display-apps.henning-orbit-calendar.workers.dev/api/device/resolve', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${env.MDA_LINK_SECRET}` }, body: JSON.stringify({ deviceToken }), signal: AbortSignal.timeout(8000) }))
   if (!response.ok) return null
   const data = await response.json().catch(() => null)
   return data?.connected && /^[a-f0-9]{64}$/.test(data.deviceHash || '') ? data : null
@@ -76,7 +76,7 @@ async function createPair(env, device = token()) {
   }
 }
 async function dashboardProfile(request, env) {
-  const linked = await centralDeviceForSession(request).catch(() => null)
+  const linked = await centralDeviceForSession(request, env).catch(() => null)
   if (linked) {
     let profile = await load(env, linked.deviceHash)
     if (!profile) {
@@ -125,7 +125,7 @@ async function route(request, env) {
     }
     if (request.method === 'POST' && url.pathname === '/api/pair/claim') {
       const body = await request.json().catch(() => ({})), code = String(body.code || '').replace(/\s/g, '')
-      const linked = await centralDeviceForSession(request).catch(() => null)
+      const linked = await centralDeviceForSession(request, env).catch(() => null)
       let deviceHash = linked?.deviceHash || ''
       let pair = null
       if (code) {
